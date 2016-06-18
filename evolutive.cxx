@@ -1,5 +1,7 @@
-#define evolutive_cxx
+#define EVOLUTIVE_CXX
 #include "evolutive.h"
+
+#include "string"
 
 Evolutive::Evolutive()
 {

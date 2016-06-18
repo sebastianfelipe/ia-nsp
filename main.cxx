@@ -1,9 +1,9 @@
-#define evolutive_cxx
-#define hospital_cxx
+#define EVOLUTIVE_CXX
+#define HOSPITAL_CXX
 #include "evolutive.h"
 #include "hospital.h"
 
-#include <stdio.h>
+#include <iostream>
 
 using namespace std;
 

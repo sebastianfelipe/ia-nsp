@@ -1,8 +1,9 @@
-#ifndef evolutive_h
-#define evolutive_h
+#ifndef EVOLUTIVE_H
+#define EVOLUTIVE_H
 
 // Headers
 #include "vector"
+#include "string"
 
 class Evolutive
 {
@@ -22,4 +23,4 @@ class Evolutive
 #endif
 
 // Definitions
-#ifdef evolutive_cxx
+//#ifdef evolutive_cxx

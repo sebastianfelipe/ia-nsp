@@ -1,8 +1,9 @@
-#ifndef hospital_h
-#define hospital_h
+#ifndef HOSPITAL_H
+#define HOSPITAL_H
 
 // Headers
 #include "vector"
+#include "string"
 
 //Code
 class Hospital
@@ -20,7 +21,7 @@ class Hospital
 	public:
 		Hospital();
 
-		void loadData(string filename);
+		void loadData();
 		void setInitialGuess();
 		void genNewPopulation();
 		void genPopulation(); // Possible the same as setInitialGuess
@@ -32,11 +33,13 @@ class Hospital
 
 		void nextEvolutiveStep();
 
-		float evaluate();
-		int **getX();
+		//float evaluate();
+		void evaluate();
+		//int **getX();
+		void getX();
 		void print();
 };
 #endif
 
 // Definitions
-#ifdef hospital_cxx
+//#ifdef hospital_cxx

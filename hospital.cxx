@@ -1,11 +1,11 @@
-#define hospital_cxx
+#define HOSPITAL_CXX
 #include "hospital.h"
 
 Hospital::Hospital()
 {
 };
 
-void Hospital::loadData(string filename)
+void Hospital::loadData()
 {
 };
 
@@ -41,11 +41,13 @@ void Hospital::nextEvolutiveStep()
 {
 };
 
-float Hospital::evaluate()
+//float Hospital::evaluate()
+void Hospital::evaluate()
 {
 };
 
-int ** Hospital::getX()
+//int ** Hospital::getX()
+void Hospital::getX()
 {
 };
 
