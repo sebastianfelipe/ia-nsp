@@ -1,19 +1,10 @@
-class Evolutive
-{
-	private:
-		float randomPeer;
-		int populationSize;
-		int restarts;
-		int steps;
-		int **bestX;
+#ifndef hospital_h
+#define hospital_h
 
-	public:
-		Evolutive();
-		void compareResults();
-		void setParameters();
-		void run();
-};
+// Headers
+#include "vector"
 
+//Code
 class Hospital
 {
 	private:
@@ -45,3 +36,7 @@ class Hospital
 		int **getX();
 		void print();
 };
+#endif
+
+// Definitions
+#ifdef hospital_cxx
