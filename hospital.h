@@ -2,17 +2,19 @@
 #define HOSPITAL_H
 
 // Headers
+
 #include "vector"
 #include "string"
 
-//Code
+// Class
+
 class Hospital
 {
 	private:
 		int N, D, S;
-		int **coverage;
-		int ***preferences;
-		int **x;
+		std::vector<std::vector<int> > coverage;
+		std::vector<std::vector<std::vector<int> > > preferences;
+		std::vector<std::vector<int> > schedule;
 		
 		// Algorithm Parameters
 		int populationSize;
@@ -21,7 +23,8 @@ class Hospital
 	public:
 		Hospital();
 
-		void loadData();
+		void init();
+		void loadData(std::string filename);
 		void setInitialGuess();
 		void genNewPopulation();
 		void genPopulation(); // Possible the same as setInitialGuess
@@ -33,13 +36,11 @@ class Hospital
 
 		void nextEvolutiveStep();
 
-		//float evaluate();
-		void evaluate();
+		float evaluate();
+		//void evaluate();
 		//int **getX();
-		void getX();
+		std::vector<std::vector<int> > getSchedule();
 		void print();
 };
-#endif
 
-// Definitions
-//#ifdef hospital_cxx
+#endif

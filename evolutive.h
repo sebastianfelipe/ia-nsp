@@ -2,8 +2,11 @@
 #define EVOLUTIVE_H
 
 // Headers
+
 #include "vector"
 #include "string"
+
+// Class
 
 class Evolutive
 {
@@ -20,7 +23,5 @@ class Evolutive
 		void setParameters();
 		void run();
 };
-#endif
 
-// Definitions
-//#ifdef evolutive_cxx
+#endif

@@ -3,12 +3,15 @@
 #include "evolutive.h"
 #include "hospital.h"
 
-#include <iostream>
-
-using namespace std;
 
 int main()
-{
-	cout << "Hola The Gang!" << endl;
+{    
+    Hospital hospital;
+
+    std::string s = "instances/25_7_4_1.nsp";
+    hospital.loadData(s);
+    
 	return 0;
 };
+
+
