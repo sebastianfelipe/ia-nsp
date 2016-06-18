@@ -1,14 +1,14 @@
-# This example was https://www.cs.swarthmore.edu/~newhall/unixhelp/howto_makefiles.html
+# Reference: https://www.cs.swarthmore.edu/~newhall/unixhelp/howto_makefiles.html
+
 CC = g++
-#CFLAGS  = -g -Wall
 CFLAGS  = -g
+#CFLAGS  = -g -Wall
 
 all: nsp
 
 # To create the executable file main we need the object files
 # main.o, evolutive.o and hospital.o:
 #
-
 nsp:  main.o evolutive.o hospital.o
 	$(CC) $(CFLAGS) -o nsp main.o evolutive.o hospital.o
 
