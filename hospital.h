@@ -24,9 +24,11 @@ class Hospital
 
 		// Restrictions: Work Parameters
 		std::vector<std::vector<int> > ALONG;
+
 		// Algorithm Parameters
 		unsigned populationSize;
 		int *rouletteWheel;
+		float PENALTY;
 
 	public:
 		Hospital();

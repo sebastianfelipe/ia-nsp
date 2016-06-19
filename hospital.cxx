@@ -20,6 +20,7 @@ Hospital::Hospital()
 	unsigned seed = 4;
 	std::srand(seed);
 	this->populationSize = 3;
+	this->PENALTY = 1000;
 
 	for (unsigned i = 0; i < this->populationSize; i++)
 	{
@@ -239,7 +240,26 @@ void Hospital::nextEvolutiveStep()
 
 float Hospital::evaluate()
 {
-	return 0;
+	// Declaration of the objetive function values
+	float unhappiness = 0;
+	float penalties = 0;
+
+	// There are 2 + S restrictions that must be verified
+	std::vector<int> restrictions(2 + this->S, 0);
+
+	// Verify violated restrictions
+
+	// Calculate the unhappiness
+	
+
+	// Calculate the penalties
+	for (unsigned restriction = 0; restriction < restrictions.size(); restriction++)
+	{
+		penalties = restrictions.at(restriction)*this->PENALTY;
+	}
+
+	float result = unhappiness + penalties
+	return result;
 };
 
 std::vector<std::vector<std::vector<int> > > Hospital::getPopulation()
