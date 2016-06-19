@@ -10,7 +10,8 @@ int main()
 
     std::string s = "instances/25_7_4_1.nsp";
     hospital.loadData(s);
-    
+    hospital.genFirstPopulation();
+    hospital.print();
 	return 0;
 };
 

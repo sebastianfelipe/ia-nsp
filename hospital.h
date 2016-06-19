@@ -11,22 +11,29 @@
 class Hospital
 {
 	private:
+		// Problem Parameters
 		int N, D, S;
-		std::vector<std::vector<int> > coverage;
-		std::vector<std::vector<std::vector<int> > > preferences;
-		std::vector<std::vector<int> > schedule;
-		
+		std::vector<std::vector<int> > COVERAGE;
+		std::vector<std::vector<std::vector<int> > > PREFERENCES;
+		std::vector<std::vector<std::vector<int> > > population;
+		std::vector<std::vector<int> > bestSchedule;
+
+		// Restrictions: Nurse Parameters
+		unsigned NURSE_MIN_DAYS, NURSE_MAX_DAYS;
+		unsigned NURSE_MIN_CONSECUTIVE_DAYS, NURSE_MAX_CONSECUTIVE_DAYS;
+
+		// Restrictions: Work Parameters
+		std::vector<std::vector<int> > ALONG;
 		// Algorithm Parameters
-		int populationSize;
+		unsigned populationSize;
 		int *rouletteWheel;
 
 	public:
 		Hospital();
 
-		void init();
+		//void init();
 		void loadData(std::string filename);
-		void setInitialGuess();
-		void genNewPopulation();
+		void genFirstPopulation();
 		void genPopulation(); // Possible the same as setInitialGuess
 		void genRouletteWheel();
 
@@ -39,7 +46,8 @@ class Hospital
 		float evaluate();
 		//void evaluate();
 		//int **getX();
-		std::vector<std::vector<int> > getSchedule();
+		std::vector<std::vector<std::vector<int> > > getPopulation();
+		std::vector<std::vector<int> > getBestSchedule();
 		void print();
 };
 
