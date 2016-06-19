@@ -3,6 +3,10 @@
 #include "evolutive.h"
 #include "hospital.h"
 
+#include <random>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
 
 int main()
 {    
@@ -10,7 +14,7 @@ int main()
 
     std::string s = "instances/25_7_4_1.nsp";
     hospital.loadData(s);
-    hospital.genFirstPopulation();
+    hospital.genPopulation();
     hospital.print();
 	return 0;
 };

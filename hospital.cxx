@@ -17,7 +17,8 @@
 Hospital::Hospital()
 {
 	// Set the srand (semilla)
-	std::srand(4);
+	unsigned seed = 4;
+	std::srand(seed);
 	this->populationSize = 3;
 
 	for (unsigned i = 0; i < this->populationSize; i++)
@@ -114,10 +115,90 @@ void Hospital::loadData(std::string filename)
 	else std::cout << "Unable to open the file"; 
 };
 
-void Hospital::genFirstPopulation()
+void Hospital::genChromosome(unsigned chromosome)
 {
+	// The idea behind this step, is generate a feasible chromosome
+	// The steps are very simple. First, choose randomly a nurse in a day,
+	// then, for that day, choose the shift that requires immediate allocation (from left to right -> S_0...S_s)
+	// In other words, this algorithm is a Greedy algorithm to find a feasible solution first
+
+	// Copy the coverage matrix and sum the require allocation
+	unsigned necessaryNurses = 0;
+	std::vector<std::vector<int> > coverage;
+	for (unsigned d = 0; d < this->D; d++)
+	{
+		for (unsigned s = 0; s < this->S; s++)
+		{
+			necessaryNurses = necessaryNurses + this->COVERAGE.at(d).at(s);
+		}
+		coverage.push_back(this->COVERAGE.at(d));
+	}
+
+	std::vector<unsigned> shuffle;
+	for (unsigned i = 0; i < (this->N*this->D); i++)
+	{
+		shuffle.push_back(i);
+	}
+
+	
+	// Shuffle the vector
+	std::random_shuffle(shuffle.begin(), shuffle.end());
+	
+	// Allocate nurses to shifts
+	unsigned allocation = 0;
+	unsigned nurse = 0;
+	while (allocation < necessaryNurses)
+	{
+		// Decode the nurse and the day to schedule
+		unsigned n = shuffle.at(nurse)/this->D;
+		unsigned d = shuffle.at(nurse)%this->D;
+
+		// Looking for the immediate shift that need to be allocated
+		for (unsigned s = 0; s < this->S; s++)
+		{
+			// If exists a shift to assign, then assign it to the nurse n
+			if (coverage.at(d).at(s) > 0)
+			{
+				// Nurse allocation by day in a shift
+				this->population.at(chromosome).at(n).at(d) = s;
+				coverage.at(d).at(s)--;
+
+				// ------------------------------
+				// This code is to print the changes in the coverage matrix
+				// in order to understand how the nurses are taking the shifts
+				// This section is to develope
+				/*
+				std::cout << "This is the allocation: " << allocation + 1 << std::endl;
+				std::cout << "n: " << n << " d: " << d << " s: " << s << std::endl;
+				for (unsigned i = 0; i < this->D; i++)
+				{
+					for (unsigned j= 0; j < this->S; j++)
+					{
+						std::cout << coverage.at(i).at(j) << "\t";
+					}
+					std::cout << std::endl;
+				}
+				*/
+				// ------------------------------
+
+				allocation++;
+				break;
+			}
+			
+		}
+		nurse++;
+	}
+	//std::cout << allocation << std::endl;
+};
+
+void Hospital::genPopulation()
+{
+	// Crear lista de enfermeras (sólo posición)
+	// Shuffle
+	// Por cada valor de esta lista, asignar enfermera a turno
 	//this->schedule;
-	for (unsigned p = 0; p < this->populationSize; p++)
+	
+	for (unsigned chromosome = 0; chromosome < this->populationSize; chromosome++)
 	{
 		for (unsigned n = 0; n < this->N; n++)
 		{
@@ -125,16 +206,15 @@ void Hospital::genFirstPopulation()
 
 			for (unsigned d = 0; d < this->D; d++)
 			{
-				v.at(d) = std::rand()%(this->S);
+				// -1 represent that the nurse haven't been scheduled yet
+				v.at(d) = -1;//std::rand()%(this->S);
 			}
 			
-			this->population.at(p).push_back(v);
+			this->population.at(chromosome).push_back(v);
 		}
-	}
-};
 
-void Hospital::genPopulation()
-{
+		this->genChromosome(chromosome);
+	}
 };
 
 void Hospital::genRouletteWheel()
@@ -174,8 +254,25 @@ std::vector<std::vector<int> > Hospital::getBestSchedule()
 
 void Hospital::print()
 {
-	// Print Population Matrix
 
+	/*
+	// Print N, D  and S parameters
+	std::cout << this->N << "\t" << this->D << "\t" << this->S << std::endl;
+	std::cout << std::endl;
+
+	// Print Coverage Matrix
+	for (unsigned d = 0; d < this->D; d++ )
+	{	
+		for (unsigned s = 0; s < this->S; s++ )
+		{
+			std::cout << this->COVERAGE.at(d).at(s) << "\t";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+
+	// Print Population Matrix
+	*/
 	for (unsigned i = 0; i < this->population.size(); i++)
 	{
 		std::cout << "Cromosoma: " << i+1 << std::endl;
@@ -203,21 +300,6 @@ void Hospital::print()
 	*/
 
 	/*
-	// Print N, D  and S parameters
-	std::cout << this->N << "\t" << this->D << "\t" << this->S << std::endl;
-	std::cout << std::endl;
-
-	// Print Coverage Matrix
-	for (unsigned d = 0; d < this->D; d++ )
-	{	
-		for (unsigned s = 0; s < this->S; s++ )
-		{
-			std::cout << this->COVERAGE.at(d).at(s) << "\t";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
 	// Print Preferences Matrix
 	for (unsigned n = 0; n < this->N; n++ )
 	{

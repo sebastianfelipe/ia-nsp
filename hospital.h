@@ -33,8 +33,8 @@ class Hospital
 
 		//void init();
 		void loadData(std::string filename);
-		void genFirstPopulation();
-		void genPopulation(); // Possible the same as setInitialGuess
+		void genChromosome(unsigned chromosome);
+		void genPopulation();
 		void genRouletteWheel();
 
 		void applyCrossOver();
