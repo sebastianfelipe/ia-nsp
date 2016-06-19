@@ -6,6 +6,14 @@
 #include <string>
 #include <sstream>
 
+// Definir función objetivo con penalizaciones
+// Definir restricciones (queriers)
+// Definir movimientos (cross-over y mutation)
+// Armar la ruleta
+// Generar algoritmo evolutivo
+// Definir número de pasos y otras características incluyendo el control
+// Definir el comportamiento del algoritmo incluyendo los restarts
+
 Hospital::Hospital()
 {
 	// Set the srand (semilla)
