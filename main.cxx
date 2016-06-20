@@ -3,26 +3,25 @@
 #include "evolutive.h"
 #include "hospital.h"
 
-#include <random>
-#include <algorithm>
-#include <iterator>
-#include <iostream>
-#include <vector>
-
 int main()
 {    
     Hospital hospital;
 
-    std::string s = "instances/25_7_4_1.nsp";
+    //std::string s = "instances/25_7_4_1.nsp";
+   	std::string s = "instances/25_7_4_2916.nsp";
     hospital.loadData(s);
+    
+    // Set parameters
+    hospital.setCrossOverProbability();
     hospital.setMutationProbability();
     hospital.genPopulation();
+    hospital.setPopulationFitness();
+    hospital.setRouletteWheel();
+    hospital.setBestSchedule();
     
-    std::cout << "Before mutation" << std::endl;
-    hospital.print();
-    hospital.mutate(0);
-    std::cout << "After mutation" << std::endl;
-    hospital.print();
+    // One run by iteration
+    hospital.run();
+
 	return 0;
 };
 

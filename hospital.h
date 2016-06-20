@@ -15,8 +15,6 @@ class Hospital
 		int N, D, S;
 		std::vector<std::vector<int> > COVERAGE;
 		std::vector<std::vector<std::vector<int> > > PREFERENCES;
-		std::vector<std::vector<std::vector<int> > > population;
-		std::vector<std::vector<int> > bestSchedule;
 
 		// Restrictions: Nurse Parameters
 		unsigned NURSE_MIN_DAYS, NURSE_MAX_DAYS;
@@ -27,32 +25,48 @@ class Hospital
 
 		// Algorithm Parameters
 		unsigned POPULATION_SIZE;
-		int *rouletteWheel;
 		float PENALTY;
 		std::vector<float> MUTATION_PROBABILITY;
 		float CROSS_OVER_PROBABILITY;
+
+		// Problem variables
+		std::vector<std::vector<std::vector<int> > > population;
+		std::vector<float> populationFitness;
+		float totalFitness;
+		std::vector<float> rouletteWheel;
+
+		std::vector<std::vector<int> > bestSchedule;
+		float bestFitness;
 
 	public:
 		Hospital();
 
 		//void init();
 		void loadData(std::string filename);
-		void genChromosome(unsigned chromosome);
+
 		void setMutationProbability();
 		void setCrossOverProbability();
+		void setPopulationFitness();
+		void setRouletteWheel();
+		void setBestSchedule();
+		
+		void updatePopulationFitness();
+		void updateRouletteWheel();
+		void updateBestSchedule();
+
+		void genChromosome(unsigned chromosome);
 		void genPopulation();
-		void genRouletteWheel();
+		unsigned getRouletteWheelChromosome();
 
 		void crossOver(unsigned chromosome1, unsigned chromosome2);
 		void mutate(unsigned chromosome);
 
-		void nextEvolutiveStep();
-
-		float evaluate(unsigned chromosome);
+		float getFitness(unsigned chromosome);
 		//void evaluate();
 		//int **getX();
-		std::vector<std::vector<std::vector<int> > > getPopulation();
-		std::vector<std::vector<int> > getBestSchedule();
+		//std::vector<std::vector<std::vector<int> > > getPopulation();
+		//std::vector<std::vector<int> > getBestSchedule();
+		void run();
 		void print();
 };
 

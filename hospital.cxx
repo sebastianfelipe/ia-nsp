@@ -19,7 +19,7 @@ Hospital::Hospital()
 	// Set the srand (semilla)
 	unsigned seed = 4;
 	std::srand(seed);
-	this->POPULATION_SIZE = 1;
+	this->POPULATION_SIZE = 4;
 	this->PENALTY = 1000;
 
 	for (unsigned i = 0; i < this->POPULATION_SIZE; i++)
@@ -126,6 +126,116 @@ void Hospital::loadData(std::string filename)
 	else std::cout << "Unable to open the file"; 
 };
 
+
+
+void Hospital::setMutationProbability()
+{
+	// The mutation probability has to be defined for every cromosome
+	for (unsigned d = 0; d < this->D; d++)
+	{
+		float probability = std::rand()/ ((double) RAND_MAX);
+		this->MUTATION_PROBABILITY.push_back(probability);
+	}
+};
+
+void Hospital::setCrossOverProbability()
+{
+	float probability = std::rand() / ((double) RAND_MAX);
+	this->CROSS_OVER_PROBABILITY = probability;
+};
+
+void Hospital::setPopulationFitness()
+{
+	this->totalFitness = 0;
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
+	{
+		unsigned fitness = this->getFitness(chromosome);
+		this->populationFitness.push_back(fitness);
+		this->totalFitness = this->totalFitness + fitness;
+	}
+};
+
+void Hospital::setRouletteWheel()
+{
+	float cumulativeProbability = .0;
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
+	{
+		cumulativeProbability = cumulativeProbability + ((float) this->populationFitness.at(chromosome))/((float) this->totalFitness);
+		this->rouletteWheel.push_back(cumulativeProbability);
+	}
+};
+
+void Hospital::setBestSchedule()
+{
+	float min = *(std::min_element(this->populationFitness.begin(), this->populationFitness.end()));
+
+	for (unsigned chromosome = 0; chromosome < this->populationFitness.size(); chromosome++)
+	{
+		// If the min is found, then the best solution is saved
+		if (this->populationFitness.at(chromosome) == min)
+		{
+			for (unsigned n = 0; n < this->N; n++)
+			{
+				std::vector<int> gen(this->D, 0);
+				for (unsigned d = 0; d < this->D; d++)
+				{
+					gen.at(d) = this->population.at(chromosome).at(n).at(d);
+				}
+				this->bestSchedule.push_back(gen);
+			}
+			this->bestFitness = min;
+			break;
+		}
+	}
+};
+
+void Hospital::updatePopulationFitness()
+{
+	this->totalFitness = 0;
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
+	{
+		unsigned fitness = this->getFitness(chromosome);
+		this->populationFitness.at(chromosome) = fitness;
+		this->totalFitness = this->totalFitness + fitness;
+	}
+};
+
+void Hospital::updateRouletteWheel()
+{
+	float cumulativeProbability = .0;
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
+	{
+		cumulativeProbability = cumulativeProbability + ((float) this->populationFitness.at(chromosome))/((float) this->totalFitness);
+		this->rouletteWheel.at(chromosome) = (cumulativeProbability);
+	}
+};
+
+void Hospital::updateBestSchedule()
+{
+	float min = *(std::min_element(this->populationFitness.begin(), this->populationFitness.end()));
+
+	if (min < this->bestFitness)
+	{
+		for (unsigned chromosome = 0; chromosome < this->populationFitness.size(); chromosome++)
+		{
+			// If the min is found, then the best solution is saved
+			if (this->populationFitness.at(chromosome) == min)
+			{
+				for (unsigned n = 0; n < this->N; n++)
+				{
+					for (unsigned d = 0; d < this->D; d++)
+					{
+						this->bestSchedule.at(n).at(d) = this->population.at(chromosome).at(n).at(d);
+					}
+				}
+				this->bestFitness = min;
+				break;
+			}
+		}
+	}
+};
+
+
 void Hospital::genChromosome(unsigned chromosome)
 {
 	// The idea behind this step, is generate a feasible chromosome
@@ -202,22 +312,6 @@ void Hospital::genChromosome(unsigned chromosome)
 	//std::cout << allocation << std::endl;
 };
 
-void Hospital::setMutationProbability()
-{
-	// The mutation probability has to be defined for every cromosome
-	for (unsigned d = 0; d < this->D; d++)
-	{
-		float probability = std::rand()/ ((double) RAND_MAX);
-		this->MUTATION_PROBABILITY.push_back(probability);
-	}
-};
-
-void Hospital::setCrossOverProbability()
-{
-	float probability = std::rand() / ((double) RAND_MAX);
-	this->CROSS_OVER_PROBABILITY = probability;
-};
-
 void Hospital::genPopulation()
 {
 	// Crear lista de enfermeras (sólo posición)
@@ -244,10 +338,6 @@ void Hospital::genPopulation()
 	}
 };
 
-void Hospital::genRouletteWheel()
-{
-};
-
 void Hospital::crossOver(unsigned chromosome1, unsigned chromosome2)
 {
 	// The cut has to be between the day 1 and the day D-1
@@ -255,7 +345,6 @@ void Hospital::crossOver(unsigned chromosome1, unsigned chromosome2)
 	// has to be taken to decide wheter this step has to be done or not
 
 	unsigned cut = std::rand()%(this->D - 2) + 1;
-	std::cout << "The cut was: " << cut << std::endl;
 	for (unsigned n = 0; n < this->N; n++)
 	{
 		for (unsigned d = cut; d < this->D; d++)
@@ -294,11 +383,7 @@ void Hospital::mutate(unsigned chromosome)
 	}
 };
 
-void Hospital::nextEvolutiveStep()
-{
-};
-
-float Hospital::evaluate(unsigned chromosome)
+float Hospital::getFitness(unsigned chromosome)
 {
 	// Declaration of the objetive function values
 	float unhappiness = 0;
@@ -335,6 +420,7 @@ float Hospital::evaluate(unsigned chromosome)
 	return result;
 };
 
+/*
 std::vector<std::vector<std::vector<int> > > Hospital::getPopulation()
 {
 	return this->population;
@@ -343,6 +429,57 @@ std::vector<std::vector<std::vector<int> > > Hospital::getPopulation()
 std::vector<std::vector<int> > Hospital::getBestSchedule()
 {
 	return this->bestSchedule;
+};
+*/
+
+unsigned Hospital::getRouletteWheelChromosome()
+{
+	float probability = std::rand()/ ((double) RAND_MAX);
+
+	for (unsigned chromosome = 0; chromosome < this->rouletteWheel.size(); chromosome++)
+	{
+		if (probability < this->rouletteWheel.at(chromosome))
+		{
+			return chromosome;
+		}
+	}
+
+	return this->rouletteWheel.size();
+};
+
+void Hospital::run()
+{
+	// The population has to be change, this method performs that
+	// Cross-Over Process
+	// This process is inspired in the cross-over process for Genetic Algorithms,
+	// but this one is a little bit different. This process transform by mixing (cross-over),
+	// two chromosomes, but, those new chromosomes can be used to generate new ones. That's the difference.
+	// This program applies this process as many times as chromosomes the population could have.
+	for (unsigned i = 0; i < this->population.size(); i++)
+	{
+		unsigned chromosome1 = this->getRouletteWheelChromosome();
+		unsigned chromosome2 = this->getRouletteWheelChromosome();
+		while (chromosome1 == chromosome2)
+		{
+			chromosome1 = this->getRouletteWheelChromosome();
+			chromosome2 = this->getRouletteWheelChromosome();
+		}
+		this->crossOver(chromosome1, chromosome2);
+
+	}
+
+	// Mutation Process
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
+	{
+		this->mutate(chromosome);
+	}
+
+	// New population was generated and the population fitness and the roulette wheel has to be generated too
+	this->updatePopulationFitness();
+	this->updateRouletteWheel();
+
+	// If there is a solution best than the best solution saved, then update it
+	this->updateBestSchedule();
 };
 
 void Hospital::print()
