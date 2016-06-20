@@ -491,13 +491,19 @@ bool Hospital::run()
 	return false;
 };
 
-void Hospital::print(unsigned restart, unsigned population)
+void Hospital::print(unsigned restart, unsigned population, clock_t timeElapsed)
 {
+	clock_t secondsElapsed = timeElapsed/((double) CLOCKS_PER_SEC);
+	clock_t hours = secondsElapsed/3600;
+	clock_t minutes = secondsElapsed/60;
+	clock_t seconds = secondsElapsed%60;
+
 	std::cout << "--------------------" << std::endl;
 	std::cout << "Best Solution Found!" << std::endl;
 	std::cout << "--------------------" << std::endl;
 	std::cout << "Restart: " << restart + 1 << std::endl;
 	std::cout << "Population: " << population + 1 << std::endl;
+	std::cout << "Time: " << hours << " hour(s), " << minutes << " minute(s), " << seconds << " second(s)" << std::endl;
 	std::cout << std::endl;
 	std::cout << "Fitness: " << this->bestFitness;
 	std::cout << std::endl;

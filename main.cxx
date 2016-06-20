@@ -4,6 +4,7 @@
 #include "hospital.h"
 
 #include <iostream>
+#include <ctime>
 
 int main()
 {
@@ -15,7 +16,9 @@ int main()
 
     Hospital hospital;
     hospital.loadData(s);
-    
+    clock_t initialTime = clock();
+    clock_t timeElapsed = 0;
+
     for (unsigned restart = 0; restart < MAX_RESTARTS; restart++)
     {
 	    // Set parameters
@@ -25,22 +28,26 @@ int main()
 	    hospital.genPopulation();
 	    hospital.setPopulationFitness();
 	    hospital.setRouletteWheel();
-
+	    
+	    timeElapsed = (clock() - initialTime);
+	    
 	    if (restart == 0)
 	    {
 	    	hospital.setBestSchedule();
-	    	hospital.print(restart, 0);
+	    	hospital.print(restart, 0, timeElapsed);
 	    }
 	    else if (hospital.updateBestSchedule())
 	    {
-    		hospital.print(restart, 0);
+    		hospital.print(restart, 0, timeElapsed);
 	    }
 	    
 	  	for (unsigned population = 1; population < MAX_POPULATION; population++)
 	  	{
+	  		// If a better soluttion has been found, then print the information
 	    	if (hospital.run())
 	    	{
-	    		hospital.print(restart, population);
+	    		timeElapsed = (clock() - initialTime);
+	    		hospital.print(restart, population, timeElapsed);
 	    	}
 	    }
 	    hospital.reset();

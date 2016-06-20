@@ -2,7 +2,7 @@
 #define HOSPITAL_H
 
 // Headers
-
+#include <ctime>
 #include "vector"
 #include "string"
 
@@ -66,7 +66,7 @@ class Hospital
 		float getFitness(unsigned chromosome);
 
 		bool run();
-		void print(unsigned restart, unsigned iteration);
+		void print(unsigned restart, unsigned iteration, clock_t timeElapsed);
 		void reset();
 };
 
