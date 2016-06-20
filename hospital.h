@@ -26,9 +26,11 @@ class Hospital
 		std::vector<std::vector<int> > ALONG;
 
 		// Algorithm Parameters
-		unsigned populationSize;
+		unsigned POPULATION_SIZE;
 		int *rouletteWheel;
 		float PENALTY;
+		std::vector<float> MUTATION_PROBABILITY;
+		float CROSS_OVER_PROBABILITY;
 
 	public:
 		Hospital();
@@ -36,16 +38,17 @@ class Hospital
 		//void init();
 		void loadData(std::string filename);
 		void genChromosome(unsigned chromosome);
+		void setMutationProbability();
+		void setCrossOverProbability();
 		void genPopulation();
 		void genRouletteWheel();
 
-		void applyCrossOver();
-		void applyMutation();
-		void applyMovement();
+		void crossOver(unsigned chromosome1, unsigned chromosome2);
+		void mutate(unsigned chromosome);
 
 		void nextEvolutiveStep();
 
-		float evaluate();
+		float evaluate(unsigned chromosome);
 		//void evaluate();
 		//int **getX();
 		std::vector<std::vector<std::vector<int> > > getPopulation();

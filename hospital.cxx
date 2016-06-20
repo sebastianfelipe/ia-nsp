@@ -19,14 +19,24 @@ Hospital::Hospital()
 	// Set the srand (semilla)
 	unsigned seed = 4;
 	std::srand(seed);
-	this->populationSize = 3;
+	this->POPULATION_SIZE = 1;
 	this->PENALTY = 1000;
 
-	for (unsigned i = 0; i < this->populationSize; i++)
+	for (unsigned i = 0; i < this->POPULATION_SIZE; i++)
 	{
 		std::vector<std::vector<int> > p;
 		this->population.push_back(p);
 	}
+
+	/*
+	// The mutation probability has to be defined for every cromosome
+	for (unsigned d = 0; d < this->D; d++)
+	{
+		float probability = std::rand()/ ((double) RAND_MAX);
+		std::cout << probability << std::endl;
+		this->MUTATION_PROBABILITY.push_back(probability);
+	}
+	*/
 };
 
 void Hospital::loadData(std::string filename)
@@ -192,6 +202,22 @@ void Hospital::genChromosome(unsigned chromosome)
 	//std::cout << allocation << std::endl;
 };
 
+void Hospital::setMutationProbability()
+{
+	// The mutation probability has to be defined for every cromosome
+	for (unsigned d = 0; d < this->D; d++)
+	{
+		float probability = std::rand()/ ((double) RAND_MAX);
+		this->MUTATION_PROBABILITY.push_back(probability);
+	}
+};
+
+void Hospital::setCrossOverProbability()
+{
+	float probability = std::rand()/ ((double) RAND_MAX);
+	this->CROSS_OVER_PROBABILITY = probability;
+};
+
 void Hospital::genPopulation()
 {
 	// Crear lista de enfermeras (sólo posición)
@@ -199,7 +225,7 @@ void Hospital::genPopulation()
 	// Por cada valor de esta lista, asignar enfermera a turno
 	//this->schedule;
 	
-	for (unsigned chromosome = 0; chromosome < this->populationSize; chromosome++)
+	for (unsigned chromosome = 0; chromosome < this->POPULATION_SIZE; chromosome++)
 	{
 		for (unsigned n = 0; n < this->N; n++)
 		{
@@ -222,23 +248,57 @@ void Hospital::genRouletteWheel()
 {
 };
 
-void Hospital::applyCrossOver()
+void Hospital::crossOver(unsigned chromosome1, unsigned chromosome2)
 {
+	// The cut has to be between the day 1 and the day D-1
+	// in other case is like to do nothing, and that decision
+	// has to be taken to decide wheter this step has to be done or not
+
+	unsigned cut = std::rand()%(this->D - 2) + 1;
+	std::cout << "The cut was: " << cut << std::endl;
+	for (unsigned n = 0; n < this->N; n++)
+	{
+		for (unsigned d = cut; d < this->D; d++)
+		{
+			int s1 = this->population.at(chromosome1).at(n).at(d);
+			int s2 = this->population.at(chromosome2).at(n).at(d);
+			this->population.at(chromosome1).at(n).at(d) = s2;
+			this->population.at(chromosome2).at(n).at(d) = s1;
+		}
+	}
 };
 
-void Hospital::applyMutation()
+void Hospital::mutate(unsigned chromosome)
 {
-};
+	// For this algorithm, the mutation is made by shuffling the nurses allocated in a day
+	for (unsigned d = 0; d < this->D; d++)
+	{
+		float probability = std::rand()/ ((double) RAND_MAX);
 
-void Hospital::applyMovement()
-{
+		// If the probability calculated is greater than the fixed by day, then mutate
+		if (probability > this->MUTATION_PROBABILITY.at(d))
+		{
+			std::vector<int> values;
+			for (unsigned n = 0; n < this->N; n++)
+			{
+				values.push_back(this->population.at(chromosome).at(n).at(d));
+			}
+
+			std::random_shuffle(values.begin(), values.end());
+			
+			for (unsigned n = 0; n < this->N; n++)
+			{
+				this->population.at(chromosome).at(n).at(d) = values.at(n);
+			}
+		}
+	}
 };
 
 void Hospital::nextEvolutiveStep()
 {
 };
 
-float Hospital::evaluate()
+float Hospital::evaluate(unsigned chromosome)
 {
 	// Declaration of the objetive function values
 	float unhappiness = 0;
@@ -250,6 +310,19 @@ float Hospital::evaluate()
 	// Verify violated restrictions
 
 	// Calculate the unhappiness
+	for (unsigned n = 0; n < this->N; n++)
+	{
+		for (unsigned d = 0; d < this->D; d++)
+		{
+			// The shifts allocated are the ones that are different than -1
+			// -1 represents that a shift haven't been allocated yet
+			int s = this->population.at(chromosome).at(n).at(d);
+			if (s > -1)
+			{
+				unhappiness = unhappiness + this->PREFERENCES.at(n).at(d).at(s);
+			}
+		}
+	}
 	
 
 	// Calculate the penalties
@@ -258,7 +331,7 @@ float Hospital::evaluate()
 		penalties = restrictions.at(restriction)*this->PENALTY;
 	}
 
-	float result = unhappiness + penalties
+	float result = unhappiness + penalties;
 	return result;
 };
 
