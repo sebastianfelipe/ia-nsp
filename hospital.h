@@ -24,10 +24,12 @@ class Hospital
 		std::vector<std::vector<int> > ALONG;
 
 		// Algorithm Parameters
+		unsigned MAX_ITER;
 		unsigned POPULATION_SIZE;
 		float PENALTY;
 		std::vector<float> MUTATION_PROBABILITY;
 		float CROSS_OVER_PROBABILITY;
+
 
 		// Problem variables
 		std::vector<std::vector<std::vector<int> > > population;
@@ -44,6 +46,7 @@ class Hospital
 		//void init();
 		void loadData(std::string filename);
 
+		void setTime();
 		void setMutationProbability();
 		void setCrossOverProbability();
 		void setPopulationFitness();
@@ -52,7 +55,7 @@ class Hospital
 		
 		void updatePopulationFitness();
 		void updateRouletteWheel();
-		void updateBestSchedule();
+		bool updateBestSchedule();
 
 		void genChromosome(unsigned chromosome);
 		void genPopulation();
@@ -61,12 +64,10 @@ class Hospital
 		void crossOver(unsigned chromosome1, unsigned chromosome2);
 		void mutate(unsigned chromosome);
 
+		unsigned getMaxIter();
 		float getFitness(unsigned chromosome);
-		//void evaluate();
-		//int **getX();
-		//std::vector<std::vector<std::vector<int> > > getPopulation();
-		//std::vector<std::vector<int> > getBestSchedule();
-		void run();
+
+		bool run();
 		void print();
 };
 

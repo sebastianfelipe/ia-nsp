@@ -19,6 +19,7 @@ Hospital::Hospital()
 	// Set the srand (semilla)
 	unsigned seed = 4;
 	std::srand(seed);
+	this->MAX_ITER = 4000;
 	this->POPULATION_SIZE = 4;
 	this->PENALTY = 1000;
 
@@ -27,6 +28,7 @@ Hospital::Hospital()
 		std::vector<std::vector<int> > p;
 		this->population.push_back(p);
 	}
+
 
 	/*
 	// The mutation probability has to be defined for every cromosome
@@ -126,7 +128,10 @@ void Hospital::loadData(std::string filename)
 	else std::cout << "Unable to open the file"; 
 };
 
+void Hospital::setTime()
+{
 
+};
 
 void Hospital::setMutationProbability()
 {
@@ -210,7 +215,7 @@ void Hospital::updateRouletteWheel()
 	}
 };
 
-void Hospital::updateBestSchedule()
+bool Hospital::updateBestSchedule()
 {
 	float min = *(std::min_element(this->populationFitness.begin(), this->populationFitness.end()));
 
@@ -229,10 +234,12 @@ void Hospital::updateBestSchedule()
 					}
 				}
 				this->bestFitness = min;
-				break;
+				return true;
 			}
 		}
 	}
+
+	return false;
 };
 
 
@@ -344,7 +351,7 @@ void Hospital::crossOver(unsigned chromosome1, unsigned chromosome2)
 	// in other case is like to do nothing, and that decision
 	// has to be taken to decide wheter this step has to be done or not
 
-	unsigned cut = std::rand()%(this->D - 2) + 1;
+	unsigned cut = (std::rand()%(this->D - 2)) + 1;
 	for (unsigned n = 0; n < this->N; n++)
 	{
 		for (unsigned d = cut; d < this->D; d++)
@@ -381,6 +388,11 @@ void Hospital::mutate(unsigned chromosome)
 			}
 		}
 	}
+};
+
+unsigned Hospital::getMaxIter()
+{
+	return this->MAX_ITER;
 };
 
 float Hospital::getFitness(unsigned chromosome)
@@ -435,19 +447,19 @@ std::vector<std::vector<int> > Hospital::getBestSchedule()
 unsigned Hospital::getRouletteWheelChromosome()
 {
 	float probability = std::rand()/ ((double) RAND_MAX);
-
 	for (unsigned chromosome = 0; chromosome < this->rouletteWheel.size(); chromosome++)
 	{
-		if (probability < this->rouletteWheel.at(chromosome))
+		if (probability <= this->rouletteWheel.at(chromosome))
 		{
 			return chromosome;
 		}
 	}
 
-	return this->rouletteWheel.size();
+	return this->rouletteWheel.size() - 1;
 };
 
-void Hospital::run()
+//139749
+bool Hospital::run()
 {
 	// The population has to be change, this method performs that
 	// Cross-Over Process
@@ -467,7 +479,6 @@ void Hospital::run()
 		this->crossOver(chromosome1, chromosome2);
 
 	}
-
 	// Mutation Process
 	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
 	{
@@ -479,13 +490,41 @@ void Hospital::run()
 	this->updateRouletteWheel();
 
 	// If there is a solution best than the best solution saved, then update it
-	this->updateBestSchedule();
+	if (this->updateBestSchedule())
+	{
+		//this->print();
+		return true;
+	};
+
+	return false;
 };
 
 void Hospital::print()
 {
+	std::cout << "--------------------" << std::endl;
+	std::cout << "Best Solution Found!" << std::endl;
+	std::cout << "--------------------" << std::endl;
+	std::cout << std::endl;
+	std::cout << "Fitness: " << this->bestFitness;
+	std::cout << std::endl;
+	for (unsigned n = 0; n < this->bestSchedule.size(); n++)
+	{
+		for (unsigned d = 0; d < this->bestSchedule.at(n).size() - 1; d++)
+		{
+			std::cout << this->bestSchedule.at(n).at(d) << "\t";
+		}
+		//if (n != this->bestSchedule.size())
+		//{
+		std::cout << std::endl;
+		//}
+	}
+	std::cout << "--------------------" << std::endl;
+};
 
-	/*
+/*
+void Hospital::print()
+{
+
 	// Print N, D  and S parameters
 	std::cout << this->N << "\t" << this->D << "\t" << this->S << std::endl;
 	std::cout << std::endl;
@@ -502,7 +541,6 @@ void Hospital::print()
 	std::cout << std::endl;
 
 	// Print Population Matrix
-	*/
 	for (unsigned i = 0; i < this->population.size(); i++)
 	{
 		std::cout << "Cromosoma: " << i+1 << std::endl;
@@ -517,7 +555,6 @@ void Hospital::print()
 		std::cout << std::endl;
 	}
 
-	/*
 	for (unsigned n = 0; n < this->N; n++ )
 	{	
 		for (unsigned d = 0; d < this->D; d++ )
@@ -527,9 +564,7 @@ void Hospital::print()
 		std::cout << std::endl;
 	}
 	std::cout << std::endl;
-	*/
 
-	/*
 	// Print Preferences Matrix
 	for (unsigned n = 0; n < this->N; n++ )
 	{
@@ -562,31 +597,6 @@ void Hospital::print()
 			std::cout << this->ALONG.at(s).at(i) << "\t";
 		}
 		std::cout << std::endl;
-	}
-	*/
-};
-
-/*
-void Hospital::init()
-{
-	// Initialize Coverage
-	for (unsigned d = 0; d < this->D; d++ )
-	{
-		std::vector<int> v(this->S, 0);
-		this->coverage.push_back(v);
-	}
-
-	// Initialize Preferences
-	for (unsigned n = 0; n < this->N; n++ )
-	{
-		std::vector<std::vector<int> > v;
-		this->preferences.push_back(v);
-
-		for (unsigned d = 0; d < this->D; d++ )
-		{
-			std::vector<int> v(this->S, 0);
-			this->preferences.at(n).push_back(v);
-		}
 	}
 };
 */
