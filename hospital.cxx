@@ -214,7 +214,7 @@ void Hospital::setMutationProbability()
 
 void Hospital::setCrossOverProbability()
 {
-	float probability = std::rand()/ ((double) RAND_MAX);
+	float probability = std::rand() / ((double) RAND_MAX);
 	this->CROSS_OVER_PROBABILITY = probability;
 };
 
