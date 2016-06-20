@@ -24,7 +24,6 @@ class Hospital
 		std::vector<std::vector<int> > ALONG;
 
 		// Algorithm Parameters
-		unsigned MAX_ITER;
 		unsigned POPULATION_SIZE;
 		float PENALTY;
 		std::vector<float> MUTATION_PROBABILITY;
@@ -64,11 +63,11 @@ class Hospital
 		void crossOver(unsigned chromosome1, unsigned chromosome2);
 		void mutate(unsigned chromosome);
 
-		unsigned getMaxIter();
 		float getFitness(unsigned chromosome);
 
 		bool run();
-		void print();
+		void print(unsigned restart, unsigned iteration);
+		void reset();
 };
 
 #endif

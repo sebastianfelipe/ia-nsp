@@ -19,16 +19,8 @@ Hospital::Hospital()
 	// Set the srand (semilla)
 	unsigned seed = 4;
 	std::srand(seed);
-	this->MAX_ITER = 4000;
 	this->POPULATION_SIZE = 4;
 	this->PENALTY = 1000;
-
-	for (unsigned i = 0; i < this->POPULATION_SIZE; i++)
-	{
-		std::vector<std::vector<int> > p;
-		this->population.push_back(p);
-	}
-
 
 	/*
 	// The mutation probability has to be defined for every cromosome
@@ -325,7 +317,12 @@ void Hospital::genPopulation()
 	// Shuffle
 	// Por cada valor de esta lista, asignar enfermera a turno
 	//this->schedule;
-	
+	for (unsigned i = 0; i < this->POPULATION_SIZE; i++)
+	{
+		std::vector<std::vector<int> > p;
+		this->population.push_back(p);
+	}
+
 	for (unsigned chromosome = 0; chromosome < this->POPULATION_SIZE; chromosome++)
 	{
 		for (unsigned n = 0; n < this->N; n++)
@@ -388,11 +385,6 @@ void Hospital::mutate(unsigned chromosome)
 			}
 		}
 	}
-};
-
-unsigned Hospital::getMaxIter()
-{
-	return this->MAX_ITER;
 };
 
 float Hospital::getFitness(unsigned chromosome)
@@ -499,13 +491,16 @@ bool Hospital::run()
 	return false;
 };
 
-void Hospital::print()
+void Hospital::print(unsigned restart, unsigned population)
 {
 	std::cout << "--------------------" << std::endl;
 	std::cout << "Best Solution Found!" << std::endl;
 	std::cout << "--------------------" << std::endl;
+	std::cout << "Restart: " << restart + 1 << std::endl;
+	std::cout << "Population: " << population + 1 << std::endl;
 	std::cout << std::endl;
 	std::cout << "Fitness: " << this->bestFitness;
+	std::cout << std::endl;
 	std::cout << std::endl;
 	for (unsigned n = 0; n < this->bestSchedule.size(); n++)
 	{
@@ -519,6 +514,15 @@ void Hospital::print()
 		//}
 	}
 	std::cout << "--------------------" << std::endl;
+};
+
+void Hospital::reset()
+{
+	this->MUTATION_PROBABILITY.clear();
+	this->population.clear();
+	this->populationFitness.clear();
+	this->rouletteWheel.clear();
+	this->totalFitness = 0;
 };
 
 /*
