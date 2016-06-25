@@ -394,7 +394,7 @@ float Hospital::getFitness(unsigned chromosome)
 	float penalties = 0;
 
 	// There are 2 + S restrictions that must be verified
-	std::vector<int> restrictions(2 + this->S, 0);
+	std::vector<int> restrictions(4, 0);
 
 	// Verify violated restrictions
 
@@ -510,9 +510,9 @@ void Hospital::print(unsigned restart, unsigned population, clock_t timeElapsed)
 	std::cout << std::endl;
 	for (unsigned n = 0; n < this->bestSchedule.size(); n++)
 	{
-		for (unsigned d = 0; d < this->bestSchedule.at(n).size() - 1; d++)
+		for (unsigned d = 0; d < this->bestSchedule.at(n).size(); d++)
 		{
-			std::cout << this->bestSchedule.at(n).at(d) << "\t";
+			std::cout << this->bestSchedule.at(n).at(d) + 1 << "\t";
 		}
 		//if (n != this->bestSchedule.size())
 		//{

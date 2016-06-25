@@ -9,10 +9,10 @@
 int main()
 {
 	//std::string s = "instances/25_7_4_1.nsp";
-	std::string s = "instances/25_7_4_2916.nsp";
+	std::string s = "instances/50_7_4_5649.nsp";
 
 	unsigned MAX_RESTARTS = 100;
-	unsigned MAX_POPULATION = 100000;
+	unsigned MAX_POPULATION = 5000;
 
     Hospital hospital;
     hospital.loadData(s);
