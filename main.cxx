@@ -1,7 +1,7 @@
 #define HOSPITAL_CXX
-
 #include "hospital.h"
-#include "string"
+
+#include <string>
 
 int main(int argc, char* argv[])
 {

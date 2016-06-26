@@ -6,10 +6,10 @@
 #include <fstream>
 #include <string>
 #include <iterator>
+#include <algorithm>
 #include <sstream>
 #include <ctime>
-
-#include "string"
+#include <cstdlib>
 
 Hospital::Hospital()
 {
