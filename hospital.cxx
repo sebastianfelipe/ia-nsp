@@ -6,14 +6,6 @@
 #include <string>
 #include <sstream>
 
-// Definir función objetivo con penalizaciones
-// Definir restricciones (queriers)
-// Definir movimientos (cross-over y mutation)
-// Armar la ruleta
-// Generar algoritmo evolutivo
-// Definir número de pasos y otras características incluyendo el control
-// Definir el comportamiento del algoritmo incluyendo los restarts
-
 Hospital::Hospital()
 {
 	// Set the srand (semilla)
@@ -115,11 +107,6 @@ void Hospital::loadData(std::string filename)
 	else std::cout << "Unable to open the file"; 
 };
 
-void Hospital::setTime()
-{
-
-};
-
 void Hospital::setMutationProbability()
 {
 	// The mutation probability has to be defined for every cromosome
@@ -161,37 +148,19 @@ void Hospital::setViolatedConstraints()
 {
 	int violatedConstraints[4] = {0, 0, 0, 0};
 	this->violatedConstraints.assign(&violatedConstraints[0], &violatedConstraints[0]+4);
-
 };
 
 void Hospital::setBestSchedule()
 {
-	float min = *(std::min_element(this->populationFitness.begin(), this->populationFitness.end()));
-
-	for (unsigned chromosome = 0; chromosome < this->populationFitness.size(); chromosome++)
+	for (unsigned n = 0; n < this->N; n++)
 	{
-		// If the min is found, then the best solution is saved
-		if (this->populationFitness.at(chromosome) == min)
-		{
-			for (unsigned n = 0; n < this->N; n++)
-			{
-				std::vector<int> gens(this->D, 0);
-				for (unsigned d = 0; d < this->D; d++)
-				{
-					gens.at(d) = this->population.at(chromosome).at(n).at(d);
-				}
-				this->bestSchedule.push_back(gens);
-			}
+		std::vector<int> chromosome(this->D, -1);
+		this->bestSchedule.push_back(chromosome);
+	}
 
-			this->updateViolatedConstraints(chromosome);
-			for (unsigned i = 0; i < this->violatedConstraints.size(); i++)
-			{
-				this->bestViolatedConstraints.push_back(this->violatedConstraints.at(i));
-			}
-
-			this->bestFitness = min;
-			break;
-		}
+	for (unsigned i = 0; i < 4; i++)
+	{
+		this->bestViolatedConstraints.push_back(this->violatedConstraints.at(i));
 	}
 };
 
@@ -321,38 +290,23 @@ void Hospital::updateViolatedConstraints(unsigned chromosome)
 	}
 };
 
-bool Hospital::updateBestSchedule()
+void Hospital::updateBestSchedule(unsigned chromosome)
 {
-	float min = *(std::min_element(this->populationFitness.begin(), this->populationFitness.end()));
-
-	if (min < this->bestFitness)
+	for (unsigned n = 0; n < this->N; n++)
 	{
-		for (unsigned chromosome = 0; chromosome < this->populationFitness.size(); chromosome++)
+		for (unsigned d = 0; d < this->D; d++)
 		{
-			// If the min is found, then the best solution is saved
-			if (this->populationFitness.at(chromosome) == min)
-			{
-				for (unsigned n = 0; n < this->N; n++)
-				{
-					for (unsigned d = 0; d < this->D; d++)
-					{
-						this->bestSchedule.at(n).at(d) = this->population.at(chromosome).at(n).at(d);
-					}
-				}
-
-				this->updateViolatedConstraints(chromosome);
-				for (unsigned i = 0; i < this->violatedConstraints.size(); i++)
-				{
-					this->bestViolatedConstraints.at(i) = this->violatedConstraints.at(i);
-				}
-
-				this->bestFitness = min;
-				return true;
-			}
+			this->bestSchedule.at(n).at(d) = this->population.at(chromosome).at(n).at(d);
 		}
 	}
 
-	return false;
+	for (unsigned i = 0; i < this->violatedConstraints.size(); i++)
+	{
+		this->bestViolatedConstraints.at(i) = this->violatedConstraints.at(i);
+	}
+
+	this->bestFitness = this->fitness;
+
 };
 
 void Hospital::genChromosome(unsigned chromosome)
@@ -402,25 +356,6 @@ void Hospital::genChromosome(unsigned chromosome)
 				// Nurse allocation by day in a shift
 				this->population.at(chromosome).at(n).at(d) = s;
 				coverage.at(d).at(s)--;
-
-				// ------------------------------
-				// This code is to print the changes in the coverage matrix
-				// in order to understand how the nurses are taking the shifts
-				// This section is to develope
-				/*
-				std::cout << "This is the allocation: " << allocation + 1 << std::endl;
-				std::cout << "n: " << n << " d: " << d << " s: " << s << std::endl;
-				for (unsigned i = 0; i < this->D; i++)
-				{
-					for (unsigned j= 0; j < this->S; j++)
-					{
-						std::cout << coverage.at(i).at(j) << "\t";
-					}
-					std::cout << std::endl;
-				}
-				*/
-				// ------------------------------
-
 				allocation++;
 				break;
 			}
@@ -428,15 +363,10 @@ void Hospital::genChromosome(unsigned chromosome)
 		}
 		nurse++;
 	}
-	//std::cout << allocation << std::endl;
 };
 
 void Hospital::genPopulation()
 {
-	// Crear lista de enfermeras (sólo posición)
-	// Shuffle
-	// Por cada valor de esta lista, asignar enfermera a turno
-	//this->schedule;
 	for (unsigned i = 0; i < this->POPULATION_SIZE; i++)
 	{
 		std::vector<std::vector<int> > p;
@@ -452,7 +382,7 @@ void Hospital::genPopulation()
 			for (unsigned d = 0; d < this->D; d++)
 			{
 				// -1 represent that the nurse haven't been scheduled yet
-				v.at(d) = -1;//std::rand()%(this->S);
+				v.at(d) = -1;
 			}
 			
 			this->population.at(chromosome).push_back(v);
@@ -537,8 +467,14 @@ float Hospital::getFitness(unsigned chromosome)
 		penalties = penalties + violatedConstraints.at(constraint)*this->PENALTY_WEIGHTS.at(constraint);
 	}
 
-	float result = unhappiness + penalties;
-	return result;
+	this->fitness = unhappiness + penalties;
+	
+	if (this->fitness <= this->bestFitness)
+	{
+		this->updateBestSchedule(chromosome);
+	}
+
+	return this->fitness;
 };
 
 unsigned Hospital::getRouletteWheelChromosome()
@@ -579,9 +515,8 @@ void Hospital::runCrossOverProcess()
 			this->crossOver(chromosome1, chromosome2);
 			
 			// If there is a solution better than the best solution saved, then update it
-			//this->updatePopulationFitness();
-			//this->updateRouletteWheel();
-			//this->updateBestSchedule();
+			this->updatePopulationFitness();
+			this->updateRouletteWheel();
 		}
 	}
 };
@@ -611,9 +546,6 @@ void Hospital::run()
 	// New population was generated and the population fitness and the roulette wheel has to be generated too
 	this->updatePopulationFitness();
 	this->updateRouletteWheel();
-
-	// If there is a solution better than the best solution saved, then update it
-	this->updateBestSchedule();
 };
 
 void Hospital::print(clock_t timeElapsed)
@@ -663,86 +595,6 @@ void Hospital::reset()
 	this->population.clear();
 	this->populationFitness.clear();
 	this->rouletteWheel.clear();
-	this->violatedConstraints.clear();
+	//this->violatedConstraints.clear();
 	this->totalFitness = 0;
 };
-
-/*
-void Hospital::print()
-{
-
-	// Print N, D  and S parameters
-	std::cout << this->N << "\t" << this->D << "\t" << this->S << std::endl;
-	std::cout << std::endl;
-
-	// Print Coverage Matrix
-	for (unsigned d = 0; d < this->D; d++ )
-	{	
-		for (unsigned s = 0; s < this->S; s++ )
-		{
-			std::cout << this->COVERAGE.at(d).at(s) << "\t";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
-	// Print Population Matrix
-	for (unsigned i = 0; i < this->population.size(); i++)
-	{
-		std::cout << "Cromosoma: " << i+1 << std::endl;
-		for (unsigned n = 0; n < this->population.at(i).size(); n++)
-		{	
-			for (unsigned d = 0; d < this->population.at(i).at(n).size(); d++)
-			{
-				std::cout << this->population.at(i).at(n).at(d) << "\t";
-			}
-			std::cout << std::endl;
-		}
-		std::cout << std::endl;
-	}
-
-	for (unsigned n = 0; n < this->N; n++ )
-	{	
-		for (unsigned d = 0; d < this->D; d++ )
-		{
-			std::cout << this->schedule.at(0).size() << "\t";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
-	// Print Preferences Matrix
-	for (unsigned n = 0; n < this->N; n++ )
-	{
-		for (unsigned d = 0; d < this->D; d++ )
-		{	
-			for (unsigned s = 0; s < this->S; s++ )
-			{
-				std::cout << this->PREFERENCES.at(n).at(d).at(s) << "\t";
-			}
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
-	// Print D and S parameters
-	std::cout << this->D << "\t" << this->S << std::endl;
-	std::cout << std::endl;
-
-	std::cout << this->NURSE_MIN_DAYS << "\t" << this->NURSE_MAX_DAYS << std::endl;
-	std::cout << std::endl;
-
-	std::cout << this->NURSE_MIN_CONSECUTIVE_DAYS << "\t" << this->NURSE_MAX_CONSECUTIVE_DAYS << std::endl;
-	std::cout << std::endl;
-
-	// Print Along Matrix
-	for (unsigned s = 0; s < this->S; s++ )
-	{	
-		for (unsigned i = 0; i < this->ALONG.at(s).size(); i++ )
-		{
-			std::cout << this->ALONG.at(s).at(i) << "\t";
-		}
-		std::cout << std::endl;
-	}
-};
-*/

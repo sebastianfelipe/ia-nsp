@@ -37,6 +37,7 @@ class Hospital
 		std::vector<std::vector<std::vector<int> > > population;
 		std::vector<float> populationFitness;
 		float totalFitness;
+		float fitness;
 		std::vector<float> rouletteWheel;
 		std::vector<int> violatedConstraints;
 
@@ -51,7 +52,6 @@ class Hospital
 		//void init();
 		void loadData(std::string filename);
 
-		void setTime();
 		void setMutationProbability();
 		void setCrossOverProbability();
 		void setPopulationFitness();
@@ -61,8 +61,9 @@ class Hospital
 		
 		void updatePopulationFitness();
 		void updateRouletteWheel();
+		
 		void updateViolatedConstraints(unsigned chromosome);
-		bool updateBestSchedule();
+		void updateBestSchedule(unsigned chromosome);
 
 		void genChromosome(unsigned chromosome);
 		void genPopulation();
