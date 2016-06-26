@@ -8,6 +8,8 @@
 #include <sstream>
 #include <ctime>
 
+#include "string"
+
 Hospital::Hospital()
 {
 	// Set the srand (semilla)
