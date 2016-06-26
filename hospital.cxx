@@ -34,7 +34,7 @@ bool Hospital::loadData(std::string filename)
 
 	if (file.is_open())
 	{
-		int iLine = 1;
+		unsigned iLine = 1;
 		std::vector<int>::const_iterator first, last;
 
 		while ( std::getline (file,line) )
