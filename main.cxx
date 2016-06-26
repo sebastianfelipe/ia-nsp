@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
 
 		    hospital.setViolatedConstraints();
 		    hospital.setBestSchedule();
+		    hospital.setTime();
 
 		    for (unsigned restart = 0; restart < MAX_RESTARTS; restart++)
 		    {
@@ -38,9 +39,7 @@ int main(int argc, char* argv[])
 
 			    hospital.reset();
 			}
-
-			timeElapsed = (clock() - initialTime);
-			hospital.print(timeElapsed);
+			hospital.print();
 
 			return 0;
 		}

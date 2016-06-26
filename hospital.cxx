@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <ctime>
 
 Hospital::Hospital()
 {
@@ -112,6 +113,11 @@ bool Hospital::loadData(std::string filename)
 	}
 };
 
+void Hospital::setTime()
+{
+	this->initialTime = clock();
+};
+
 void Hospital::setMutationProbability()
 {
 	// The mutation probability has to be defined for every cromosome
@@ -157,6 +163,8 @@ void Hospital::setViolatedConstraints()
 
 void Hospital::setBestSchedule()
 {
+	this->updateTimeElapsed();
+
 	for (unsigned n = 0; n < this->N; n++)
 	{
 		std::vector<int> chromosome(this->D, -1);
@@ -167,6 +175,11 @@ void Hospital::setBestSchedule()
 	this->bestViolatedConstraints.assign(&violatedConstraints[0], &violatedConstraints[0]+4);
 
 	this->fitness = -1;
+};
+
+void Hospital::updateTimeElapsed()
+{
+	this->timeElapsed = clock() - this->initialTime;
 };
 
 void Hospital::updatePopulationFitness()
@@ -297,6 +310,8 @@ void Hospital::updateViolatedConstraints(unsigned chromosome)
 
 void Hospital::updateBestSchedule(unsigned chromosome)
 {
+	this->updateTimeElapsed();
+
 	for (unsigned n = 0; n < this->N; n++)
 	{
 		for (unsigned d = 0; d < this->D; d++)
@@ -553,9 +568,9 @@ void Hospital::run()
 	this->updateRouletteWheel();
 };
 
-void Hospital::print(clock_t timeElapsed)
+void Hospital::print()
 {
-	clock_t secondsElapsed = timeElapsed/((double) CLOCKS_PER_SEC);
+	clock_t secondsElapsed = this->timeElapsed/((double) CLOCKS_PER_SEC);
 	clock_t hours = secondsElapsed/3600;
 	clock_t minutes = secondsElapsed/60;
 	clock_t seconds = secondsElapsed%60;

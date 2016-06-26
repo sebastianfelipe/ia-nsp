@@ -11,6 +11,10 @@
 class Hospital
 {
 	private:
+		// Time
+		clock_t initialTime;
+		clock_t timeElapsed;
+
 		// Problem Parameters
 		int N, D, S;
 		std::vector<std::vector<int> > COVERAGE;
@@ -52,6 +56,7 @@ class Hospital
 		//void init();
 		bool loadData(std::string filename);
 
+		void setTime();
 		void setMutationProbability();
 		void setCrossOverProbability();
 		void setPopulationFitness();
@@ -59,9 +64,9 @@ class Hospital
 		void setViolatedConstraints();
 		void setBestSchedule();
 		
+		void updateTimeElapsed();
 		void updatePopulationFitness();
 		void updateRouletteWheel();
-		
 		void updateViolatedConstraints(unsigned chromosome);
 		void updateBestSchedule(unsigned chromosome);
 
@@ -78,7 +83,7 @@ class Hospital
 		void runMutationProcess();
 		void run();
 
-		void print(clock_t timeElapsed);
+		void print();
 
 		void resetViolatedConstraints();
 		void reset();
