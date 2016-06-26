@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 
 	    if (hospital.loadData(filename))
 	    {
-	    	unsigned MAX_RESTARTS = 100;
+	    	unsigned MAX_RESTARTS = 10000;
 			unsigned MAX_POPULATION = 5000;
 		    clock_t initialTime = clock();
 		    clock_t timeElapsed = 0;
