@@ -462,9 +462,9 @@ float Hospital::getFitness(unsigned chromosome)
 	}
 
 	// Calculate the penalties
-	for (unsigned constraint = 0; constraint < violatedConstraints.size(); constraint++)
+	for (unsigned constraint = 0; constraint < this->violatedConstraints.size(); constraint++)
 	{
-		penalties = penalties + violatedConstraints.at(constraint)*this->PENALTY_WEIGHTS.at(constraint);
+		penalties = penalties + this->violatedConstraints.at(constraint)*this->PENALTY_WEIGHTS.at(constraint);
 	}
 
 	this->fitness = unhappiness + penalties;

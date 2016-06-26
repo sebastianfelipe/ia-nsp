@@ -10,8 +10,8 @@ int main(int argc, char* argv[])
 	{
 		std::string filename = (std::string) argv[1];
 
-		unsigned MAX_RESTARTS = 20;
-		unsigned MAX_POPULATION = 5000;
+		unsigned MAX_RESTARTS = 1;
+		unsigned MAX_POPULATION = 4;
 
 	    Hospital hospital;
 	    hospital.loadData(filename);
@@ -33,6 +33,7 @@ int main(int argc, char* argv[])
 		  	for (unsigned population = 1; population < MAX_POPULATION; population++)
 		  	{
 		    	hospital.run();
+		    	//hospital.print((clock() - initialTime));
 		    }
 
 		    hospital.reset();
