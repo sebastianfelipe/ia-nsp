@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 		    hospital.setTime();
 		    hospital.setDebug(DEBUG);
 
-		    for (int restart = 0; restart < MAX_RESTARTS; restart++)
+		    for (unsigned restart = 0; restart < MAX_RESTARTS; restart++)
 		    {
 			    // Set parameters
 			    hospital.setCrossOverProbability();
@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 			    hospital.setPopulationFitness();
 			    hospital.setRouletteWheel();
 			    
-			  	for (int population = 0; population < MAX_POPULATION; population++)
+			  	for (unsigned population = 0; population < MAX_POPULATION; population++)
 			  	{
 			    	hospital.run();
 			    }

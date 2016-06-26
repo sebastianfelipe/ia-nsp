@@ -46,7 +46,7 @@ bool Hospital::loadData(std::string filename)
 			std::vector<std::string> vss(begin, end);
 
 			std::vector<int> vsi;
-		    for (int i=0; i < vss.size(); i++)
+		    for (unsigned i=0; i < vss.size(); i++)
 		    {
 		     	vsi.push_back(atoi(vss.at(i).c_str()));
 		    }
@@ -70,7 +70,7 @@ bool Hospital::loadData(std::string filename)
 			{
 				std::vector<std::vector<int> > dV;
 				
-				for (int d = 0; d < this->D; d++)
+				for (unsigned d = 0; d < this->D; d++)
 				{
 					first = vsi.begin() + d*this->S;
 					last = vsi.begin() + d*this->S + this->S + 1;
@@ -132,7 +132,7 @@ void Hospital::setDebug(bool debug)
 void Hospital::setMutationProbability()
 {
 	// The mutation probability has to be defined for every cromosome
-	for (int d = 0; d < this->D; d++)
+	for (unsigned d = 0; d < this->D; d++)
 	{
 		float probability = std::rand()/ ((double) RAND_MAX);
 		this->MUTATION_PROBABILITY.push_back(probability);
@@ -148,7 +148,7 @@ void Hospital::setCrossOverProbability()
 void Hospital::setPopulationFitness()
 {
 	this->totalFitness = 0;
-	for (int chromosome = 0; chromosome < this->population.size(); chromosome++)
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
 	{
 		int fitness = this->getFitness(chromosome);
 		this->populationFitness.push_back(fitness);
@@ -159,7 +159,7 @@ void Hospital::setPopulationFitness()
 void Hospital::setRouletteWheel()
 {
 	float cumulativeProbability = .0;
-	for (int chromosome = 0; chromosome < this->population.size(); chromosome++)
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
 	{
 		cumulativeProbability = cumulativeProbability + ((float) this->populationFitness.at(chromosome))/((float) this->totalFitness);
 		this->rouletteWheel.push_back(cumulativeProbability);
@@ -176,7 +176,7 @@ void Hospital::setBestSchedule()
 {
 	this->updateBestTime();
 
-	for (int n = 0; n < this->N; n++)
+	for (unsigned n = 0; n < this->N; n++)
 	{
 		std::vector<int> chromosome(this->D, -1);
 		this->bestSchedule.push_back(chromosome);
@@ -196,7 +196,7 @@ void Hospital::updateBestTime()
 void Hospital::updatePopulationFitness()
 {
 	this->totalFitness = 0;
-	for (int chromosome = 0; chromosome < this->population.size(); chromosome++)
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
 	{
 		int fitness = this->getFitness(chromosome);
 		this->populationFitness.at(chromosome) = fitness;
@@ -207,7 +207,7 @@ void Hospital::updatePopulationFitness()
 void Hospital::updateRouletteWheel()
 {
 	float cumulativeProbability = .0;
-	for (int chromosome = 0; chromosome < this->population.size(); chromosome++)
+	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
 	{
 		cumulativeProbability = cumulativeProbability + ((float) this->populationFitness.at(chromosome))/((float) this->totalFitness);
 		this->rouletteWheel.at(chromosome) = (cumulativeProbability);
@@ -218,7 +218,7 @@ void Hospital::updateViolatedConstraints(int chromosome)
 {
 	this->resetViolatedConstraints();
 	// Verification of violated constraints
-	for (int n = 0; n < this->N; n++)
+	for (unsigned n = 0; n < this->N; n++)
 	{
 		// Temporal variables declaration
 		int lastShiftWorked = -1;
@@ -226,7 +226,7 @@ void Hospital::updateViolatedConstraints(int chromosome)
 		std::vector<std::vector<int > > shiftWorked(this->S);
 		std::vector<int> daysWorked;
 
-		for (int d = 0; d < this->D; d++)
+		for (unsigned d = 0; d < this->D; d++)
 		{
 			int shift = this->population.at(chromosome).at(n).at(d);
 
@@ -259,7 +259,7 @@ void Hospital::updateViolatedConstraints(int chromosome)
 		// Verification
 		// Type 1 and 2
 		int sum = 0;
-		for (int i = 0; i < daysWorked.size(); i++)
+		for (unsigned i = 0; i < daysWorked.size(); i++)
 		{
 			// Type 2
 			// If the value of the consecutive days worked are not in the necessary range, then this restriction is violated
@@ -284,14 +284,14 @@ void Hospital::updateViolatedConstraints(int chromosome)
 		
 		//std::cout << "shiftWorked.size(): " << shiftWorked.size() << std::endl;
 		
-		for (int s = 0; s < shiftWorked.size(); s++)
+		for (unsigned s = 0; s < shiftWorked.size(); s++)
 		{
 			int sum = 0;
 			
 			//std::cout << "S: " << s << " size: " << shiftWorked.size() << std::endl;
 			
 			// Type 4
-			for (int i = 0; i < shiftWorked.at(s).size(); i++)
+			for (unsigned i = 0; i < shiftWorked.at(s).size(); i++)
 			{
 				
 				//std::cout << "for i=" << i << " it contains: " << shiftWorked.at(s).at(i) << std::endl;
@@ -323,15 +323,15 @@ void Hospital::updateBestSchedule(int chromosome)
 {
 	this->updateBestTime();
 
-	for (int n = 0; n < this->N; n++)
+	for (unsigned n = 0; n < this->N; n++)
 	{
-		for (int d = 0; d < this->D; d++)
+		for (unsigned d = 0; d < this->D; d++)
 		{
 			this->bestSchedule.at(n).at(d) = this->population.at(chromosome).at(n).at(d);
 		}
 	}
 
-	for (int i = 0; i < this->violatedConstraints.size(); i++)
+	for (unsigned i = 0; i < this->violatedConstraints.size(); i++)
 	{
 		this->bestViolatedConstraints.at(i) = this->violatedConstraints.at(i);
 	}
@@ -355,9 +355,9 @@ void Hospital::genChromosome(int chromosome)
 	// Copy the coverage matrix and sum the require allocation
 	int necessaryNurses = 0;
 	std::vector<std::vector<int> > coverage;
-	for (int d = 0; d < this->D; d++)
+	for (unsigned d = 0; d < this->D; d++)
 	{
-		for (int s = 0; s < this->S; s++)
+		for (unsigned s = 0; s < this->S; s++)
 		{
 			necessaryNurses = necessaryNurses + this->COVERAGE.at(d).at(s);
 		}
@@ -365,7 +365,7 @@ void Hospital::genChromosome(int chromosome)
 	}
 
 	std::vector<int> shuffle;
-	for (int i = 0; i < (this->N*this->D); i++)
+	for (unsigned i = 0; i < (this->N*this->D); i++)
 	{
 		shuffle.push_back(i);
 	}
@@ -384,7 +384,7 @@ void Hospital::genChromosome(int chromosome)
 		int d = shuffle.at(nurse)%this->D;
 
 		// Looking for the immediate shift that need to be allocated
-		for (int s = 0; s < this->S; s++)
+		for (unsigned s = 0; s < this->S; s++)
 		{
 			// If exists a shift to assign, then assign it to the nurse n
 			if (coverage.at(d).at(s) > 0)
@@ -403,19 +403,19 @@ void Hospital::genChromosome(int chromosome)
 
 void Hospital::genPopulation()
 {
-	for (int i = 0; i < this->POPULATION_SIZE; i++)
+	for (unsigned i = 0; i < this->POPULATION_SIZE; i++)
 	{
 		std::vector<std::vector<int> > p;
 		this->population.push_back(p);
 	}
 
-	for (int chromosome = 0; chromosome < this->POPULATION_SIZE; chromosome++)
+	for (unsigned chromosome = 0; chromosome < this->POPULATION_SIZE; chromosome++)
 	{
-		for (int n = 0; n < this->N; n++)
+		for (unsigned n = 0; n < this->N; n++)
 		{
 			std::vector<int> v(this->D);
 
-			for (int d = 0; d < this->D; d++)
+			for (unsigned d = 0; d < this->D; d++)
 			{
 				// -1 represent that the nurse haven't been scheduled yet
 				v.at(d) = -1;
@@ -435,9 +435,9 @@ void Hospital::crossOver(int chromosome1, int chromosome2)
 	// has to be taken to decide wheter this step has to be done or not
 
 	int cut = (std::rand()%(this->D - 2)) + 1;
-	for (int n = 0; n < this->N; n++)
+	for (unsigned n = 0; n < this->N; n++)
 	{
-		for (int d = cut; d < this->D; d++)
+		for (unsigned d = cut; d < this->D; d++)
 		{
 			int s1 = this->population.at(chromosome1).at(n).at(d);
 			int s2 = this->population.at(chromosome2).at(n).at(d);
@@ -450,7 +450,7 @@ void Hospital::crossOver(int chromosome1, int chromosome2)
 void Hospital::mutate(int chromosome)
 {
 	// For this algorithm, the mutation is made by shuffling the nurses allocated in a day
-	for (int d = 0; d < this->D; d++)
+	for (unsigned d = 0; d < this->D; d++)
 	{
 		float probability = std::rand()/ ((double) RAND_MAX);
 
@@ -458,14 +458,14 @@ void Hospital::mutate(int chromosome)
 		if (probability > this->MUTATION_PROBABILITY.at(d))
 		{
 			std::vector<int> values;
-			for (int n = 0; n < this->N; n++)
+			for (unsigned n = 0; n < this->N; n++)
 			{
 				values.push_back(this->population.at(chromosome).at(n).at(d));
 			}
 
 			std::random_shuffle(values.begin(), values.end());
 			
-			for (int n = 0; n < this->N; n++)
+			for (unsigned n = 0; n < this->N; n++)
 			{
 				this->population.at(chromosome).at(n).at(d) = values.at(n);
 			}
@@ -483,9 +483,9 @@ float Hospital::getFitness(int chromosome)
 	this->updateViolatedConstraints(chromosome);
 
 	// Calculate the unhappiness
-	for (int n = 0; n < this->N; n++)
+	for (unsigned n = 0; n < this->N; n++)
 	{
-		for (int d = 0; d < this->D; d++)
+		for (unsigned d = 0; d < this->D; d++)
 		{
 			// The shifts allocated are the ones that are different than -1
 			// -1 represents that a shift haven't been allocated yet
@@ -498,7 +498,7 @@ float Hospital::getFitness(int chromosome)
 	}
 
 	// Calculate the penalties
-	for (int constraint = 0; constraint < this->violatedConstraints.size(); constraint++)
+	for (unsigned constraint = 0; constraint < this->violatedConstraints.size(); constraint++)
 	{
 		penalties = penalties + this->violatedConstraints.at(constraint)*this->PENALTY_WEIGHTS.at(constraint);
 	}
@@ -516,7 +516,7 @@ float Hospital::getFitness(int chromosome)
 int Hospital::getRouletteWheelChromosome()
 {
 	float probability = std::rand()/ ((double) RAND_MAX);
-	for (int chromosome = 0; chromosome < this->rouletteWheel.size(); chromosome++)
+	for (unsigned chromosome = 0; chromosome < this->rouletteWheel.size(); chromosome++)
 	{
 		if (probability <= this->rouletteWheel.at(chromosome))
 		{
@@ -534,7 +534,7 @@ void Hospital::runCrossOverProcess()
 	// but this one is a little bit different. This process transform by mixing (cross-over),
 	// two chromosomes, but, those new chromosomes can be used to generate new ones. That's the difference.
 	// This program applies this process as many times as chromosomes the population could have.
-	for (int i = 0; i < this->population.size(); i++)
+	for (unsigned i = 0; i < this->population.size(); i++)
 	{
 		float probability = std::rand()/ ((double) RAND_MAX);
 
@@ -563,7 +563,7 @@ void Hospital::runMutationProcess()
 	float probability = std::rand()/ ((double) RAND_MAX);
 	if (probability >= this->GENERAL_MUTATION_PROBABILITY)
 	{
-		for (int chromosome = 0; chromosome < this->population.size(); chromosome++)
+		for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
 		{
 			this->mutate(chromosome);
 		}
@@ -612,9 +612,9 @@ void Hospital::print()
 	std::cout << std::endl;
 	*/
 
-	for (int n = 0; n < this->bestSchedule.size(); n++)
+	for (unsigned n = 0; n < this->bestSchedule.size(); n++)
 	{
-		for (int d = 0; d < this->bestSchedule.at(n).size(); d++)
+		for (unsigned d = 0; d < this->bestSchedule.at(n).size(); d++)
 		{
 			std::cout << this->bestSchedule.at(n).at(d) + 1 << "\t";
 		}
