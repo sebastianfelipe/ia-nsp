@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 
 	    if (hospital.loadData(filename))
 	    {
-	    	unsigned MAX_RESTARTS = 10;
+	    	unsigned MAX_RESTARTS = 1000;
 			unsigned MAX_POPULATION = 5000;
 
 		    hospital.setViolatedConstraints();
