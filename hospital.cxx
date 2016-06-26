@@ -5,6 +5,7 @@
 #include <random>
 #include <fstream>
 #include <string>
+#include <iterator>
 #include <sstream>
 #include <ctime>
 
