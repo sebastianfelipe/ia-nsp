@@ -1,5 +1,3 @@
-make
-make clean
 ./nsp instances/25_7_4_1.nsp > logs/25_7_4_1.log &
 ./nsp instances/25_7_4_2916.nsp > logs/25_7_4_2916.log &
 ./nsp instances/30_28_4_58.nsp > logs/30_28_4_58.log &
