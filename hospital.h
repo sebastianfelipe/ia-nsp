@@ -20,14 +20,14 @@ class Hospital
 		std::vector<std::vector<std::vector<int> > > PREFERENCES;
 
 		// Restrictions: Nurse Parameters
-		unsigned NURSE_MIN_DAYS, NURSE_MAX_DAYS;
-		unsigned NURSE_MIN_CONSECUTIVE_DAYS, NURSE_MAX_CONSECUTIVE_DAYS;
+		int NURSE_MIN_DAYS, NURSE_MAX_DAYS;
+		int NURSE_MIN_CONSECUTIVE_DAYS, NURSE_MAX_CONSECUTIVE_DAYS;
 
 		// Restrictions: Shift Parameters
 		std::vector<std::vector<int> > SHIFT_CONSTRAINTS;
 
 		// Algorithm Parameters
-		unsigned POPULATION_SIZE;
+		int POPULATION_SIZE;
 		//float PENALTY;
 		std::vector<int> PENALTY_WEIGHTS;
 		std::vector<float> MUTATION_PROBABILITY;
@@ -71,17 +71,17 @@ class Hospital
 		void updateBestTime();
 		void updatePopulationFitness();
 		void updateRouletteWheel();
-		void updateViolatedConstraints(unsigned chromosome);
-		void updateBestSchedule(unsigned chromosome);
+		void updateViolatedConstraints(int chromosome);
+		void updateBestSchedule(int chromosome);
 
-		void genChromosome(unsigned chromosome);
+		void genChromosome(int chromosome);
 		void genPopulation();
-		unsigned getRouletteWheelChromosome();
+		int getRouletteWheelChromosome();
 
-		void crossOver(unsigned chromosome1, unsigned chromosome2);
-		void mutate(unsigned chromosome);
+		void crossOver(int chromosome1, int chromosome2);
+		void mutate(int chromosome);
 
-		float getFitness(unsigned chromosome);
+		float getFitness(int chromosome);
 
 		void runCrossOverProcess();
 		void runMutationProcess();

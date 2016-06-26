@@ -16,15 +16,15 @@ int main(int argc, char* argv[])
 
 	    if (hospital.loadData(filename))
 	    {
-	    	unsigned MAX_RESTARTS = 10;
-			unsigned MAX_POPULATION = 5000;
+	    	int MAX_RESTARTS = 10;
+			int MAX_POPULATION = 5000;
 
 		    hospital.setViolatedConstraints();
 		    hospital.setBestSchedule();
 		    hospital.setTime();
 		    hospital.setDebug(DEBUG);
 
-		    for (unsigned restart = 0; restart < MAX_RESTARTS; restart++)
+		    for (int restart = 0; restart < MAX_RESTARTS; restart++)
 		    {
 			    // Set parameters
 			    hospital.setCrossOverProbability();
@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 			    hospital.setPopulationFitness();
 			    hospital.setRouletteWheel();
 			    
-			  	for (unsigned population = 0; population < MAX_POPULATION; population++)
+			  	for (int population = 0; population < MAX_POPULATION; population++)
 			  	{
 			    	hospital.run();
 			    }
