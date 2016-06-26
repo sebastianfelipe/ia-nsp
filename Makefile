@@ -13,9 +13,9 @@ nsp:  main.o hospital.o
 	$(CC) $(CFLAGS) -o nsp main.o hospital.o
 
 # To create the object file main.o, we need the source
-# files evolutive.c, and hospital.h:
+# files main.cxx, and hospital.h:
 #
-main.o:  hospital.h
+main.o:  main.cxx hospital.h
 	$(CC) $(CFLAGS) -c main.cxx
 
 # To create the object file hospital.o, we need the source files
