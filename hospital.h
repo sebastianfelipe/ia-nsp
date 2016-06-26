@@ -20,14 +20,17 @@ class Hospital
 		unsigned NURSE_MIN_DAYS, NURSE_MAX_DAYS;
 		unsigned NURSE_MIN_CONSECUTIVE_DAYS, NURSE_MAX_CONSECUTIVE_DAYS;
 
-		// Restrictions: Work Parameters
-		std::vector<std::vector<int> > ALONG;
+		// Restrictions: Shift Parameters
+		std::vector<std::vector<int> > SHIFT_CONSTRAINTS;
 
 		// Algorithm Parameters
 		unsigned POPULATION_SIZE;
-		float PENALTY;
+		//float PENALTY;
+		std::vector<int> PENALTY_WEIGHTS;
 		std::vector<float> MUTATION_PROBABILITY;
 		float CROSS_OVER_PROBABILITY;
+		float GENERAL_MUTATION_PROBABILITY;
+		float GENERAL_CROSS_OVER_PROBABILITY;
 
 
 		// Problem variables
@@ -35,8 +38,11 @@ class Hospital
 		std::vector<float> populationFitness;
 		float totalFitness;
 		std::vector<float> rouletteWheel;
+		std::vector<int> violatedConstraints;
 
+		// Best variables
 		std::vector<std::vector<int> > bestSchedule;
+		std::vector<int> bestViolatedConstraints;
 		float bestFitness;
 
 	public:
@@ -50,10 +56,12 @@ class Hospital
 		void setCrossOverProbability();
 		void setPopulationFitness();
 		void setRouletteWheel();
+		void setViolatedConstraints();
 		void setBestSchedule();
 		
 		void updatePopulationFitness();
 		void updateRouletteWheel();
+		void updateViolatedConstraints(unsigned chromosome);
 		bool updateBestSchedule();
 
 		void genChromosome(unsigned chromosome);
@@ -65,8 +73,13 @@ class Hospital
 
 		float getFitness(unsigned chromosome);
 
-		bool run();
-		void print(unsigned restart, unsigned iteration, clock_t timeElapsed);
+		void runCrossOverProcess();
+		void runMutationProcess();
+		void run();
+
+		void print(clock_t timeElapsed);
+
+		void resetViolatedConstraints();
 		void reset();
 };
 

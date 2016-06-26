@@ -20,17 +20,12 @@ Hospital::Hospital()
 	unsigned seed = 4;
 	std::srand(seed);
 	this->POPULATION_SIZE = 4;
-	this->PENALTY = 1000;
+	
+	this->GENERAL_MUTATION_PROBABILITY = .5;
+	this->GENERAL_CROSS_OVER_PROBABILITY = .5;
 
-	/*
-	// The mutation probability has to be defined for every cromosome
-	for (unsigned d = 0; d < this->D; d++)
-	{
-		float probability = std::rand()/ ((double) RAND_MAX);
-		std::cout << probability << std::endl;
-		this->MUTATION_PROBABILITY.push_back(probability);
-	}
-	*/
+	int penaltyWeights[4] = {1000, 1000, 1000, 1000};
+	this->PENALTY_WEIGHTS.assign(&penaltyWeights[0], &penaltyWeights[0]+4);
 };
 
 void Hospital::loadData(std::string filename)
@@ -108,7 +103,7 @@ void Hospital::loadData(std::string filename)
 
 			else if (iLine >= (this->N + this->D + 12) and iLine <= (this->N + this->D + this->S + 11))
 			{
-				this->ALONG.push_back(vsi);
+				this->SHIFT_CONSTRAINTS.push_back(vsi);
 			}
 
 		  	//std::cout << line << '\n';
@@ -162,6 +157,13 @@ void Hospital::setRouletteWheel()
 	}
 };
 
+void Hospital::setViolatedConstraints()
+{
+	int violatedConstraints[4] = {0, 0, 0, 0};
+	this->violatedConstraints.assign(&violatedConstraints[0], &violatedConstraints[0]+4);
+
+};
+
 void Hospital::setBestSchedule()
 {
 	float min = *(std::min_element(this->populationFitness.begin(), this->populationFitness.end()));
@@ -173,13 +175,20 @@ void Hospital::setBestSchedule()
 		{
 			for (unsigned n = 0; n < this->N; n++)
 			{
-				std::vector<int> gen(this->D, 0);
+				std::vector<int> gens(this->D, 0);
 				for (unsigned d = 0; d < this->D; d++)
 				{
-					gen.at(d) = this->population.at(chromosome).at(n).at(d);
+					gens.at(d) = this->population.at(chromosome).at(n).at(d);
 				}
-				this->bestSchedule.push_back(gen);
+				this->bestSchedule.push_back(gens);
 			}
+
+			this->updateViolatedConstraints(chromosome);
+			for (unsigned i = 0; i < this->violatedConstraints.size(); i++)
+			{
+				this->bestViolatedConstraints.push_back(this->violatedConstraints.at(i));
+			}
+
 			this->bestFitness = min;
 			break;
 		}
@@ -207,6 +216,111 @@ void Hospital::updateRouletteWheel()
 	}
 };
 
+void Hospital::updateViolatedConstraints(unsigned chromosome)
+{
+	this->resetViolatedConstraints();
+	// Verification of violated constraints
+	for (int n = 0; n < this->N; n++)
+	{
+		// Temporal variables declaration
+		int lastShiftWorked = -1;
+		
+		std::vector<std::vector<int > > shiftWorked(this->S);
+		std::vector<int> daysWorked;
+
+		for (int d = 0; d < this->D; d++)
+		{
+			int shift = this->population.at(chromosome).at(n).at(d);
+
+			if (shift > -1)
+			{
+				// Reducing information for constraints of the type 1 and 2
+				if (lastShiftWorked == -1)
+				{
+					daysWorked.push_back(1);
+				}
+				else
+				{
+					daysWorked.back()++;
+				}
+
+				// Reducing information for contraints of the type 3 and 4
+				if (shift != lastShiftWorked)
+				{
+					shiftWorked.at(shift).push_back(1);
+				}
+				else
+				{
+					shiftWorked.at(shift).back()++;
+				}
+			}
+
+			lastShiftWorked = shift;
+		}
+
+		// Verification
+		// Type 1 and 2
+		int sum = 0;
+		for (int i = 0; i < daysWorked.size(); i++)
+		{
+			// Type 2
+			// If the value of the consecutive days worked are not in the necessary range, then this restriction is violated
+			if (!((daysWorked.at(i) >= this->NURSE_MIN_CONSECUTIVE_DAYS) && (daysWorked.at(i) <= this->NURSE_MAX_CONSECUTIVE_DAYS)))
+			{
+				// Adding a value to the representation of the violated constraint of type 2
+				this->violatedConstraints.at(1)++;
+			}
+
+			sum = sum + daysWorked.at(i);
+		}
+
+		// Type 1
+		// If the value of the days worked are not in the necessary range, then this restriction is violated
+		if (!((sum >= this->NURSE_MIN_DAYS) && sum <= (this->NURSE_MAX_DAYS)))
+		{
+			// Adding a value to the representation of the violated constraint of type 1
+			this->violatedConstraints.at(0)++;
+		}
+
+		// Type 3 and 4
+		
+		//std::cout << "shiftWorked.size(): " << shiftWorked.size() << std::endl;
+		
+		for (int s = 0; s < shiftWorked.size(); s++)
+		{
+			int sum = 0;
+			
+			//std::cout << "S: " << s << " size: " << shiftWorked.size() << std::endl;
+			
+			// Type 4
+			for (int i = 0; i < shiftWorked.at(s).size(); i++)
+			{
+				
+				//std::cout << "for i=" << i << " it contains: " << shiftWorked.at(s).at(i) << std::endl;
+				
+				if ( !( (shiftWorked.at(s).at(i) >= this->SHIFT_CONSTRAINTS.at(s).at(0)) && (shiftWorked.at(s).at(i) <= this->SHIFT_CONSTRAINTS.at(s).at(1)) ) )
+				{
+					
+					//std::cout << "fucked" << std::endl;
+					
+					// Adding a value to the representation of the violated constraint of type 4
+					this->violatedConstraints.at(3)++;
+				}
+
+				sum = sum + shiftWorked.at(s).at(i);
+			}
+
+			// Type 3
+			if (!( (sum >= this->SHIFT_CONSTRAINTS.at(s).at(2)) && (sum <= this->SHIFT_CONSTRAINTS.at(s).at(3))))
+			{
+				// Adding a value to the representation of the violated constraint of type 3
+				this->violatedConstraints.at(2)++;
+			}
+		}
+
+	}
+};
+
 bool Hospital::updateBestSchedule()
 {
 	float min = *(std::min_element(this->populationFitness.begin(), this->populationFitness.end()));
@@ -225,6 +339,13 @@ bool Hospital::updateBestSchedule()
 						this->bestSchedule.at(n).at(d) = this->population.at(chromosome).at(n).at(d);
 					}
 				}
+
+				this->updateViolatedConstraints(chromosome);
+				for (unsigned i = 0; i < this->violatedConstraints.size(); i++)
+				{
+					this->bestViolatedConstraints.at(i) = this->violatedConstraints.at(i);
+				}
+
 				this->bestFitness = min;
 				return true;
 			}
@@ -233,7 +354,6 @@ bool Hospital::updateBestSchedule()
 
 	return false;
 };
-
 
 void Hospital::genChromosome(unsigned chromosome)
 {
@@ -393,10 +513,8 @@ float Hospital::getFitness(unsigned chromosome)
 	float unhappiness = 0;
 	float penalties = 0;
 
-	// There are 2 + S restrictions that must be verified
-	std::vector<int> restrictions(4, 0);
-
-	// Verify violated restrictions
+	// Verification of violated constraints
+	this->updateViolatedConstraints(chromosome);
 
 	// Calculate the unhappiness
 	for (unsigned n = 0; n < this->N; n++)
@@ -412,29 +530,16 @@ float Hospital::getFitness(unsigned chromosome)
 			}
 		}
 	}
-	
 
 	// Calculate the penalties
-	for (unsigned restriction = 0; restriction < restrictions.size(); restriction++)
+	for (unsigned constraint = 0; constraint < violatedConstraints.size(); constraint++)
 	{
-		penalties = restrictions.at(restriction)*this->PENALTY;
+		penalties = penalties + violatedConstraints.at(constraint)*this->PENALTY_WEIGHTS.at(constraint);
 	}
 
 	float result = unhappiness + penalties;
 	return result;
 };
-
-/*
-std::vector<std::vector<std::vector<int> > > Hospital::getPopulation()
-{
-	return this->population;
-};
-
-std::vector<std::vector<int> > Hospital::getBestSchedule()
-{
-	return this->bestSchedule;
-};
-*/
 
 unsigned Hospital::getRouletteWheelChromosome()
 {
@@ -450,10 +555,8 @@ unsigned Hospital::getRouletteWheelChromosome()
 	return this->rouletteWheel.size() - 1;
 };
 
-//139749
-bool Hospital::run()
+void Hospital::runCrossOverProcess()
 {
-	// The population has to be change, this method performs that
 	// Cross-Over Process
 	// This process is inspired in the cross-over process for Genetic Algorithms,
 	// but this one is a little bit different. This process transform by mixing (cross-over),
@@ -461,37 +564,59 @@ bool Hospital::run()
 	// This program applies this process as many times as chromosomes the population could have.
 	for (unsigned i = 0; i < this->population.size(); i++)
 	{
-		unsigned chromosome1 = this->getRouletteWheelChromosome();
-		unsigned chromosome2 = this->getRouletteWheelChromosome();
-		while (chromosome1 == chromosome2)
-		{
-			chromosome1 = this->getRouletteWheelChromosome();
-			chromosome2 = this->getRouletteWheelChromosome();
-		}
-		this->crossOver(chromosome1, chromosome2);
+		float probability = std::rand()/ ((double) RAND_MAX);
 
+		if (probability >= this->GENERAL_CROSS_OVER_PROBABILITY)
+		{
+			unsigned chromosome1 = this->getRouletteWheelChromosome();
+			unsigned chromosome2 = this->getRouletteWheelChromosome();
+			
+			while (chromosome1 == chromosome2)
+			{
+				chromosome1 = this->getRouletteWheelChromosome();
+				chromosome2 = this->getRouletteWheelChromosome();
+			}
+			this->crossOver(chromosome1, chromosome2);
+			
+			// If there is a solution better than the best solution saved, then update it
+			//this->updatePopulationFitness();
+			//this->updateRouletteWheel();
+			//this->updateBestSchedule();
+		}
 	}
+};
+
+void Hospital::runMutationProcess()
+{
 	// Mutation Process
-	for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
+	float probability = std::rand()/ ((double) RAND_MAX);
+	if (probability >= this->GENERAL_MUTATION_PROBABILITY)
 	{
-		this->mutate(chromosome);
+		for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
+		{
+			this->mutate(chromosome);
+		}
 	}
+};
+
+void Hospital::run()
+{
+	// The population has to be change, this methods performs that
+	// Cross-Over Process
+	this->runCrossOverProcess();
+
+	// Mutation Process
+	this->runMutationProcess();
 
 	// New population was generated and the population fitness and the roulette wheel has to be generated too
 	this->updatePopulationFitness();
 	this->updateRouletteWheel();
 
-	// If there is a solution best than the best solution saved, then update it
-	if (this->updateBestSchedule())
-	{
-		//this->print();
-		return true;
-	};
-
-	return false;
+	// If there is a solution better than the best solution saved, then update it
+	this->updateBestSchedule();
 };
 
-void Hospital::print(unsigned restart, unsigned population, clock_t timeElapsed)
+void Hospital::print(clock_t timeElapsed)
 {
 	clock_t secondsElapsed = timeElapsed/((double) CLOCKS_PER_SEC);
 	clock_t hours = secondsElapsed/3600;
@@ -501,25 +626,35 @@ void Hospital::print(unsigned restart, unsigned population, clock_t timeElapsed)
 	std::cout << "--------------------" << std::endl;
 	std::cout << "Best Solution Found!" << std::endl;
 	std::cout << "--------------------" << std::endl;
-	std::cout << "Restart: " << restart + 1 << std::endl;
-	std::cout << "Population: " << population + 1 << std::endl;
 	std::cout << "Time: " << hours << " hour(s), " << minutes << " minute(s), " << seconds << " second(s)" << std::endl;
 	std::cout << std::endl;
 	std::cout << "Fitness: " << this->bestFitness;
 	std::cout << std::endl;
 	std::cout << std::endl;
+	std::cout << "Total Violated Constraints:" << std::endl;
+	std::cout << "Type 1: " << this->bestViolatedConstraints.at(0) << std::endl;
+	std::cout << "Type 2: " << this->bestViolatedConstraints.at(1) << std::endl;
+	std::cout << "Type 3: " << this->bestViolatedConstraints.at(2) << std::endl;
+	std::cout << "Type 4: " << this->bestViolatedConstraints.at(3) << std::endl;
+	std::cout << std::endl;
+	std::cout << std::endl;
+
 	for (unsigned n = 0; n < this->bestSchedule.size(); n++)
 	{
 		for (unsigned d = 0; d < this->bestSchedule.at(n).size(); d++)
 		{
 			std::cout << this->bestSchedule.at(n).at(d) + 1 << "\t";
 		}
-		//if (n != this->bestSchedule.size())
-		//{
 		std::cout << std::endl;
-		//}
 	}
+
 	std::cout << "--------------------" << std::endl;
+};
+
+void Hospital::resetViolatedConstraints()
+{
+	this->violatedConstraints.clear();
+	this->setViolatedConstraints();
 };
 
 void Hospital::reset()
@@ -528,6 +663,7 @@ void Hospital::reset()
 	this->population.clear();
 	this->populationFitness.clear();
 	this->rouletteWheel.clear();
+	this->violatedConstraints.clear();
 	this->totalFitness = 0;
 };
 
