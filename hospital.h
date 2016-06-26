@@ -50,7 +50,7 @@ class Hospital
 		Hospital();
 
 		//void init();
-		void loadData(std::string filename);
+		bool loadData(std::string filename);
 
 		void setMutationProbability();
 		void setCrossOverProbability();

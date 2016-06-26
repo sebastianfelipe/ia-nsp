@@ -20,7 +20,7 @@ Hospital::Hospital()
 	this->PENALTY_WEIGHTS.assign(&penaltyWeights[0], &penaltyWeights[0]+4);
 };
 
-void Hospital::loadData(std::string filename)
+bool Hospital::loadData(std::string filename)
 {	
 	std::string line;
 	std::ifstream file (filename);
@@ -102,9 +102,14 @@ void Hospital::loadData(std::string filename)
 		 	iLine++;
 		}
 		file.close();
+		return true;
 	}
 
-	else std::cout << "Unable to open the file"; 
+	else
+	{
+		std::cout << "Unable to open the file" << std::endl;
+		return false;
+	}
 };
 
 void Hospital::setMutationProbability()
