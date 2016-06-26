@@ -186,6 +186,7 @@ void Hospital::setBestSchedule()
 	this->bestViolatedConstraints.assign(&violatedConstraints[0], &violatedConstraints[0]+4);
 
 	this->fitness = -1;
+	this->bestFitness = -1;
 };
 
 void Hospital::updateBestTime()
