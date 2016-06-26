@@ -15,7 +15,7 @@ class Hospital
 		clock_t initialTime;
 		
 		// Problem Parameters
-		int N, D, S;
+		unsigned N, D, S;
 		std::vector<std::vector<int> > COVERAGE;
 		std::vector<std::vector<std::vector<int> > > PREFERENCES;
 
@@ -27,7 +27,8 @@ class Hospital
 		std::vector<std::vector<int> > SHIFT_CONSTRAINTS;
 
 		// Algorithm Parameters
-		int POPULATION_SIZE;
+		unsigned POPULATION_SIZE;
+
 		//float PENALTY;
 		std::vector<int> PENALTY_WEIGHTS;
 		std::vector<float> MUTATION_PROBABILITY;
