@@ -1,7 +1,7 @@
 # Reference: https://www.cs.swarthmore.edu/~newhall/unixhelp/howto_makefiles.html
 
 CC = g++
-CFLAGS  = -g -std=c++0x
+CFLAGS  = -g -std=c++11
 #CFLAGS  = -g -Wall
 
 all: nsp
