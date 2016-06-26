@@ -163,7 +163,7 @@ void Hospital::setViolatedConstraints()
 
 void Hospital::setBestSchedule()
 {
-	this->updateTimeElapsed();
+	this->updateBestTime();
 
 	for (unsigned n = 0; n < this->N; n++)
 	{
@@ -177,9 +177,9 @@ void Hospital::setBestSchedule()
 	this->fitness = -1;
 };
 
-void Hospital::updateTimeElapsed()
+void Hospital::updateBestTime()
 {
-	this->timeElapsed = clock() - this->initialTime;
+	this->bestTime = clock() - this->initialTime;
 };
 
 void Hospital::updatePopulationFitness()
@@ -310,7 +310,7 @@ void Hospital::updateViolatedConstraints(unsigned chromosome)
 
 void Hospital::updateBestSchedule(unsigned chromosome)
 {
-	this->updateTimeElapsed();
+	this->updateBestTime();
 
 	for (unsigned n = 0; n < this->N; n++)
 	{
@@ -570,7 +570,7 @@ void Hospital::run()
 
 void Hospital::print()
 {
-	clock_t secondsElapsed = this->timeElapsed/((double) CLOCKS_PER_SEC);
+	clock_t secondsElapsed = this->bestTime/((double) CLOCKS_PER_SEC);
 	clock_t hours = secondsElapsed/3600;
 	clock_t minutes = secondsElapsed/60;
 	clock_t seconds = secondsElapsed%60;

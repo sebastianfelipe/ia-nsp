@@ -13,8 +13,7 @@ class Hospital
 	private:
 		// Time
 		clock_t initialTime;
-		clock_t timeElapsed;
-
+		
 		// Problem Parameters
 		int N, D, S;
 		std::vector<std::vector<int> > COVERAGE;
@@ -46,6 +45,7 @@ class Hospital
 		std::vector<int> violatedConstraints;
 
 		// Best variables
+		clock_t bestTime;
 		std::vector<std::vector<int> > bestSchedule;
 		std::vector<int> bestViolatedConstraints;
 		float bestFitness;
