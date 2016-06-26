@@ -505,6 +505,7 @@ float Hospital::getFitness(int chromosome)
 
 	this->fitness = unhappiness + penalties;
 	
+	std::cout << "Let's see" << std::endl;
 	if ( (this->fitness <= this->bestFitness) || (this->bestFitness < 0) )
 	{
 		std::cout << "Is time to update :DDD" << std::endl;
