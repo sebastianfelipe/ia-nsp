@@ -46,7 +46,7 @@ bool Hospital::loadData(std::string filename)
 			std::vector<std::string> vss(begin, end);
 
 			std::vector<int> vsi;
-		    for (unsigned i=0; i < vss.size(); i++)
+		    for (unsigned i = 0; i < vss.size(); i++)
 		    {
 		     	vsi.push_back(atoi(vss.at(i).c_str()));
 		    }
