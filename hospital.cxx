@@ -19,6 +19,8 @@ Hospital::Hospital()
 
 	int penaltyWeights[4] = {1000, 1000, 1000, 1000};
 	this->PENALTY_WEIGHTS.assign(&penaltyWeights[0], &penaltyWeights[0]+4);
+
+	this->DEBUG = true;
 };
 
 bool Hospital::loadData(std::string filename)
@@ -116,6 +118,11 @@ bool Hospital::loadData(std::string filename)
 void Hospital::setTime()
 {
 	this->initialTime = clock();
+};
+
+void Hospital::setDebug(bool debug)
+{
+	this->DEBUG = debug;
 };
 
 void Hospital::setMutationProbability()
@@ -326,6 +333,11 @@ void Hospital::updateBestSchedule(unsigned chromosome)
 	}
 
 	this->bestFitness = this->fitness;
+
+	if (this->DEBUG)
+	{
+		this->print();
+	}
 
 };
 
@@ -570,15 +582,17 @@ void Hospital::run()
 
 void Hospital::print()
 {
-	clock_t secondsElapsed = this->bestTime/((double) CLOCKS_PER_SEC);
+	clock_t msElapsed = this->bestTime / (CLOCKS_PER_SEC / 1000);
+	clock_t secondsElapsed = msElapsed/1000;
 	clock_t hours = secondsElapsed/3600;
 	clock_t minutes = secondsElapsed/60;
 	clock_t seconds = secondsElapsed%60;
+	clock_t ms = msElapsed%1000;
 
 	std::cout << "--------------------" << std::endl;
 	std::cout << "Best Solution Found!" << std::endl;
 	std::cout << "--------------------" << std::endl;
-	std::cout << "Time: " << hours << " hour(s), " << minutes << " minute(s), " << seconds << " second(s)" << std::endl;
+	std::cout << "Time: " << hours << " hour(s), " << minutes << " minute(s), " << seconds << " second(s), " << ms << " millisecond(s)" << std::endl;
 	std::cout << std::endl;
 	std::cout << "Fitness: " << this->bestFitness;
 	std::cout << std::endl;
@@ -604,6 +618,11 @@ void Hospital::print()
 	}
 
 	std::cout << "--------------------" << std::endl;
+
+	if (this->DEBUG)
+	{
+		std::cout << std::endl;
+	}
 };
 
 void Hospital::resetViolatedConstraints()

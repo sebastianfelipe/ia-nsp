@@ -2,9 +2,9 @@
 #define HOSPITAL_H
 
 // Headers
-#include <ctime>
 #include "vector"
 #include "string"
+#include <ctime>
 
 // Class
 
@@ -50,6 +50,9 @@ class Hospital
 		std::vector<int> bestViolatedConstraints;
 		float bestFitness;
 
+		// Debug
+		bool DEBUG;
+
 	public:
 		Hospital();
 
@@ -57,6 +60,7 @@ class Hospital
 		bool loadData(std::string filename);
 
 		void setTime();
+		void setDebug(bool debug);
 		void setMutationProbability();
 		void setCrossOverProbability();
 		void setPopulationFitness();
@@ -64,7 +68,7 @@ class Hospital
 		void setViolatedConstraints();
 		void setBestSchedule();
 		
-		void updateTimeElapsed();
+		void updateBestTime();
 		void updatePopulationFitness();
 		void updateRouletteWheel();
 		void updateViolatedConstraints(unsigned chromosome);
