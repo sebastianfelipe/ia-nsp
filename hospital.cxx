@@ -505,7 +505,7 @@ float Hospital::getFitness(int chromosome)
 
 	this->fitness = unhappiness + penalties;
 	
-	if (this->fitness <= this->bestFitness || this->bestFitness == -1)
+	if (this->fitness <= this->bestFitness || this->bestFitness < 0)
 	{
 		this->updateBestSchedule(chromosome);
 	}
