@@ -158,10 +158,10 @@ void Hospital::setBestSchedule()
 		this->bestSchedule.push_back(chromosome);
 	}
 
-	for (unsigned i = 0; i < 4; i++)
-	{
-		this->bestViolatedConstraints.push_back(this->violatedConstraints.at(i));
-	}
+	int violatedConstraints[4] = {0, 0, 0, 0};
+	this->bestViolatedConstraints.assign(&violatedConstraints[0], &violatedConstraints[0]+4);
+
+	this->fitness = -1;
 };
 
 void Hospital::updatePopulationFitness()
@@ -469,7 +469,7 @@ float Hospital::getFitness(unsigned chromosome)
 
 	this->fitness = unhappiness + penalties;
 	
-	if (this->fitness <= this->bestFitness)
+	if (this->fitness <= this->bestFitness || this->bestFitness == -1)
 	{
 		this->updateBestSchedule(chromosome);
 	}
@@ -563,6 +563,8 @@ void Hospital::print(clock_t timeElapsed)
 	std::cout << "Fitness: " << this->bestFitness;
 	std::cout << std::endl;
 	std::cout << std::endl;
+	
+	/*
 	std::cout << "Total Violated Constraints:" << std::endl;
 	std::cout << "Type 1: " << this->bestViolatedConstraints.at(0) << std::endl;
 	std::cout << "Type 2: " << this->bestViolatedConstraints.at(1) << std::endl;
@@ -570,6 +572,7 @@ void Hospital::print(clock_t timeElapsed)
 	std::cout << "Type 4: " << this->bestViolatedConstraints.at(3) << std::endl;
 	std::cout << std::endl;
 	std::cout << std::endl;
+	*/
 
 	for (unsigned n = 0; n < this->bestSchedule.size(); n++)
 	{

@@ -10,8 +10,8 @@ int main(int argc, char* argv[])
 	{
 		std::string filename = (std::string) argv[1];
 
-		unsigned MAX_RESTARTS = 1;
-		unsigned MAX_POPULATION = 4;
+		unsigned MAX_RESTARTS = 2;
+		unsigned MAX_POPULATION = 5000;
 
 	    Hospital hospital;
 	    hospital.loadData(filename);
