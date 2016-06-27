@@ -1,0 +1,37 @@
+--------------------
+Best Solution Found!
+--------------------
+Time: 0 hour(s), 0 minute(s), 0 second(s), 221 millisecond(s)
+
+Fitness: 22072
+
+0	0	0	0	0	0	0	
+2	3	1	1	0	0	3	
+1	2	1	0	0	3	1	
+0	0	0	0	0	0	0	
+0	0	0	0	0	0	2	
+0	0	0	0	3	0	0	
+0	0	0	0	0	0	0	
+0	0	3	3	0	0	0	
+3	3	0	0	0	0	0	
+3	0	2	2	1	0	1	
+0	0	0	0	0	3	0	
+0	0	0	0	1	0	0	
+0	0	0	0	0	2	0	
+1	0	0	0	0	0	0	
+2	0	0	0	0	0	0	
+2	0	0	0	0	0	0	
+0	0	2	0	0	0	0	
+0	0	1	0	0	0	0	
+0	0	0	0	0	0	0	
+0	0	0	0	0	0	0	
+0	0	0	0	1	0	0	
+1	0	0	0	0	0	0	
+0	0	0	0	0	0	0	
+0	0	0	0	2	0	0	
+0	0	2	1	2	0	0	
+--------------------
+
+The best solution was found at the restart: 0, population: 0
+Total Time Elapsed: 0 hour(s), 0 minute(s), 37 second(s), 868 millisecond(s)
+
