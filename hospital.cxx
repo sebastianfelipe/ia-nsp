@@ -338,11 +338,14 @@ void Hospital::updateBestSchedule(int chromosome)
 	}
 
 	this->bestFitness = this->fitness;
+	this->bestHasChanged = true;
 
+	/*
 	if (this->DEBUG)
 	{
 		this->print();
 	}
+	*/
 
 };
 
@@ -573,6 +576,9 @@ void Hospital::runMutationProcess()
 
 void Hospital::run()
 {
+	// No better solution has been found yet
+	this->bestHasChanged = false;
+
 	// The population has to be change, this methods performs that
 	// Cross-Over Process
 	this->runCrossOverProcess();
@@ -584,6 +590,11 @@ void Hospital::run()
 	this->updatePopulationFitness();
 	this->updateRouletteWheel();
 };
+
+bool Hospital::hasTheBestChanged()
+{
+	return this->bestHasChanged;
+}
 
 void Hospital::print()
 {

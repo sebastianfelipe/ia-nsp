@@ -52,6 +52,7 @@ class Hospital
 		float bestFitness;
 
 		// Debug
+		bool bestHasChanged;
 		bool DEBUG;
 
 	public:
@@ -88,6 +89,7 @@ class Hospital
 		void runMutationProcess();
 		void run();
 
+		bool hasTheBestChanged();
 		void print();
 
 		void resetViolatedConstraints();
