@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 {
 	// If you want to track the program each time it finds a better solution,
 	// then set this constant called DEBUG as true, otherwise as false
-	bool DEBUG = false;
+	bool DEBUG = true;
 
 	if (argc > 1)
 	{
@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 
 	    if (hospital.loadData(filename))
 	    {
-	    	unsigned MAX_RESTARTS = 10000;
+	    	unsigned MAX_RESTARTS = 100000;
 			unsigned MAX_POPULATION = 5000;
 
 		    hospital.setViolatedConstraints();
