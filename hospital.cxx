@@ -124,6 +124,11 @@ void Hospital::setTime()
 	this->initialTime = clock();
 };
 
+void Hospital::setSeed(unsigned seed)
+{
+	std::srand(seed);
+}
+
 void Hospital::setDebug(bool debug)
 {
 	this->DEBUG = debug;

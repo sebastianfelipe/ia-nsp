@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
 	// If you want to track the program each time it finds a better solution,
 	// then set this constant called DEBUG as true, otherwise as false
-	bool DEBUG = false;
+	bool DEBUG = true;
 
 	if (argc > 1)
 	{
@@ -19,17 +19,20 @@ int main(int argc, char* argv[])
 	    {
 	    	//unsigned MAX_RESTARTS = 100000;
 			//unsigned MAX_POPULATION = 5000;
-			unsigned MAX_RESTARTS_DIFF = 10;
+			unsigned SEED = 100;
+			unsigned MAX_RESTARTS_DIFF = 20;
 			unsigned MAX_POPULATION_DIFF = 5000;
 			unsigned lastRestart;
 			unsigned lastPopulation;
 
+			hospital.setSeed(SEED);
 		    hospital.setViolatedConstraints();
 		    hospital.setBestSchedule();
 		    hospital.setTime();
 		    hospital.setDebug(DEBUG);
 
 		    lastRestart = 0;
+		    lastPopulation = 0;
 		    //for (unsigned restart = 0; restart < MAX_RESTARTS; restart++)
 		    clock_t initialTime = clock();
 
@@ -62,7 +65,10 @@ int main(int argc, char* argv[])
 			    hospital.reset();
 			}
 
-			hospital.print();
+			if (!DEBUG)
+			{
+				hospital.print();
+			}
 
 			// Total time algorithm runing
 			clock_t timeElapsed = clock() - initialTime;

@@ -63,6 +63,7 @@ class Hospital
 
 		void setTime();
 		void setDebug(bool debug);
+		void setSeed(unsigned seed);
 		void setMutationProbability();
 		void setCrossOverProbability();
 		void setPopulationFitness();
