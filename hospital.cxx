@@ -16,10 +16,10 @@ Hospital::Hospital()
 	// Set the srand (semilla)
 	int seed = 4;
 	std::srand(seed);
-	this->POPULATION_SIZE = 4;
+	this->POPULATION_SIZE = 12;
 	
-	this->GENERAL_MUTATION_PROBABILITY = .5;
-	this->GENERAL_CROSS_OVER_PROBABILITY = .5;
+	this->GENERAL_MUTATION_PROBABILITY = .8;
+	this->GENERAL_CROSS_OVER_PROBABILITY = .8;
 
 	int penaltyWeights[4] = {1000, 1000, 1000, 1000};
 	this->PENALTY_WEIGHTS.assign(&penaltyWeights[0], &penaltyWeights[0]+4);

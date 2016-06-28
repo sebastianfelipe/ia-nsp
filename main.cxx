@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	    {
 	    	//unsigned MAX_RESTARTS = 100000;
 			//unsigned MAX_POPULATION = 5000;
-			unsigned SEED = 100;
+			unsigned SEED = 10;
 			unsigned MAX_RESTARTS_DIFF = 20;
 			unsigned MAX_POPULATION_DIFF = 5000;
 			unsigned lastRestart;
