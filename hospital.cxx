@@ -464,7 +464,7 @@ void Hospital::mutate(int chromosome)
 		float probability = std::rand()/ ((double) RAND_MAX);
 
 		// If the probability calculated is greater than the fixed by day, then mutate
-		if (probability > this->MUTATION_PROBABILITY.at(d))
+		if (probability <= this->MUTATION_PROBABILITY.at(d))
 		{
 			std::vector<int> values;
 			for (unsigned n = 0; n < this->N; n++)
@@ -547,7 +547,7 @@ void Hospital::runCrossOverProcess()
 	{
 		float probability = std::rand()/ ((double) RAND_MAX);
 
-		if (probability >= this->GENERAL_CROSS_OVER_PROBABILITY)
+		if (probability <= this->GENERAL_CROSS_OVER_PROBABILITY)
 		{
 			int chromosome1 = this->getRouletteWheelChromosome();
 			int chromosome2 = this->getRouletteWheelChromosome();
@@ -570,7 +570,7 @@ void Hospital::runMutationProcess()
 {
 	// Mutation Process
 	float probability = std::rand()/ ((double) RAND_MAX);
-	if (probability >= this->GENERAL_MUTATION_PROBABILITY)
+	if (probability <= this->GENERAL_MUTATION_PROBABILITY)
 	{
 		for (unsigned chromosome = 0; chromosome < this->population.size(); chromosome++)
 		{
